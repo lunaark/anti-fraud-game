@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>防骗市集 - 你能识破骗局吗？</title>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ========== 莫兰迪浅色配色 ========== */
+:root {
+  --primary: #A8B5A0;          /* 雾霾绿 */
+  --primary-light: #C4CEC0;
+  --primary-dark: #8A9682;
+  --primary-soft: #F0F4ED;
+  --danger: #C08A8A;           /* 玫瑰豆沙 */
+  --danger-soft: #F7EEEE;
+  --success: #9DAE8C;          /* 鼠尾草 */
+  --success-soft: #F2F5EF;
+  --warning: #D4B896;          /* 浅咖驼 */
+  --warning-soft: #F9F4EE;
+  --bg: #F5F1EC;               /* 米白底 */
+  --card-bg: #FAF7F2;          /* 暖白卡片 */
+  --text: #5C5552;             /* 深咖灰 */
+  --text-secondary: #8C8481;   /* 中咖灰 */
+  --border: #E5DED4;           /* 暖米灰 */
+  --shadow: 0 2px 8px rgba(92,85,82,0.06);
+  --shadow-hover: 0 8px 24px rgba(92,85,82,0.10);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+.icon-fallback {
+  font-family: inherit;
+  font-style: normal;
+  line-height: 1;
+}
+
+/* ========== Header ========== */
+.header {
+  background: rgba(250,247,242,0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--text);
+  padding: 14px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+.header .subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.header .sim-badge {
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  border: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.back-btn {
+  background: var(--primary-soft);
+  border: none;
+  color: var(--primary-dark);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.back-btn:hover { background: var(--primary-light); }
+
+/* ========== Screens ========== */
+.screen {
+  display: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Disclaimer ========== */
+.disclaimer {
+  background: var(--warning-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--warning);
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* ========== Welcome ========== */
+.welcome-hero {
+  text-align: center;
+  padding: 56px 20px 32px;
+}
+
+.welcome-hero .shield-icon { font-size: 76px; margin-bottom: 16px; filter: grayscale(0.15); }
+
+.welcome-hero h2 {
+  font-size: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.welcome-hero p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.welcome-stats {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-bottom: 40px;
+}
+
+.welcome-stats .stat { text-align: center; }
+
+.welcome-stats .stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+.welcome-stats .stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.start-btn, .sell-entry-btn {
+  border: none;
+  padding: 14px 48px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.start-btn {
+  background: var(--primary);
+  color: #FAF7F2;
+  box-shadow: 0 4px 14px rgba(140,154,135,0.35);
+}
+
+.sell-entry-btn {
+  background: var(--warning);
+  color: #FAF7F2;
+  box-shadow: 0 4px 14px rgba(201,172,133,0.35);
+}
+
+.start-btn:hover, .sell-entry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(74,69,65,0.18);
+}
+
+.start-btn:active, .sell-entry-btn:active { transform: translateY(0); }
+
+/* ========== Market ========== */
+.market-top-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-bar {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow);
+  flex: 1;
+  border: 1px solid var(--border);
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text);
+  background: transparent;
+}
+
+.search-bar input::placeholder { color: var(--text-secondary); }
+.search-bar .search-icon { color: var(--text-secondary); }
+
+.sell-fab {
+  background: var(--success);
+  color: #FAF7F2;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(157,174,140,0.30);
+  transition: all 0.2s;
+}
+
+.sell-fab:hover { transform: translateY(-1px); }
+
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.cat-tab.active {
+  background: var(--primary);
+  color: #FAF7F2;
+  border-color: var(--primary);
+}
+
+/* ========== Risk Legend ========== */
+.risk-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.risk-legend span { display: flex; align-items: center; gap: 4px; }
+
+.risk-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.risk-dot.safe { background: var(--success); }
+.risk-dot.suspicious { background: var(--warning); }
+.risk-dot.danger { background: var(--danger); }
+
+/* ========== Product Grid ========== */
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.product-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border);
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary-light);
+}
+
+.product-img {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  color: #FAF7F2;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.product-tag.tag-danger { background: var(--danger); }
+.product-tag.tag-warning { background: var(--warning); }
+.product-tag.tag-safe { background: var(--success); }
+
+.product-risk-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--card-bg);
+}
+
+.product-info {
+  padding: 10px 12px;
+}
+
+.product-info h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+
+.product-info .price {
+  color: var(--danger);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.product-info .price .unit { font-size: 12px; font-weight: 400; }
+
+.product-info .original-price {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  margin-left: 4px;
+}
+
+.product-info .seller {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ========== Detail ========== */
+.detail-img {
+  width: 100%;
+  height: 240px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+
+.detail-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.detail-price { font-size: 28px; font-weight: 700; color: var(--danger); margin-bottom: 4px; }
+
+.detail-original {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  margin-bottom: 16px;
+}
+
+.detail-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.seller-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.seller-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: var(--primary-soft);
+}
+
+.seller-info h4 { font-size: 15px; font-weight: 600; color: var(--text); }
+.seller-info p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+.detail-actions { display: flex; gap: 10px; }
+
+.detail-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-chat { background: var(--primary-soft); color: var(--primary-dark); }
+.btn-buy {
+  background: var(--danger);
+  color: #FAF7F2;
+  box-shadow: 0 2px 8px rgba(184,138,138,0.3);
+}
+
+.friend-profile {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.profile-cover {
+  height: 150px;
+  background: linear-gradient(135deg, #A8B5A0, #D4B896);
+  position: relative;
+}
+
+.profile-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  padding: 0 16px 16px;
+  margin-top: -34px;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: var(--primary-soft);
+  border: 3px solid var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+}
+
+.profile-name h3 { font-size: 20px; color: var(--text); margin-bottom: 2px; }
+.profile-name p { font-size: 12px; color: var(--text-secondary); }
+
+.profile-warning {
+  margin: 0 16px 14px;
+  padding: 10px 12px;
+  background: var(--warning-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--warning);
+  line-height: 1.5;
+}
+
+.moments {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.moment {
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.moment-time {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.moment-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.profile-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ========== Chat ========== */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  animation: msgIn 0.3s ease;
+  position: relative;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-seller {
+  align-self: flex-start;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  color: var(--text);
+}
+
+.msg-user {
+  align-self: flex-end;
+  background: var(--primary);
+  color: #FAF7F2;
+  border-bottom-right-radius: 4px;
+}
+
+.msg-system {
+  align-self: center;
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-size: 12px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.msg-sender {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.chat-choices {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  background: var(--card-bg);
+}
+
+.choice-btn {
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.choice-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 10px 14px;
+  align-self: flex-start;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+}
+
+.typing-dot {
+  width: 8px; height: 8px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+/* ========== Payment ========== */
+.payment-page { padding: 20px 16px; }
+
+.payment-header { text-align: center; margin-bottom: 24px; }
+.payment-header .pay-icon { font-size: 48px; margin-bottom: 8px; }
+.payment-header h2 { font-size: 22px; margin-bottom: 4px; color: var(--text); }
+
+.payment-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--danger);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.payment-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.pay-option {
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.pay-option.option-danger {
+  background: var(--danger-soft);
+  border: 2px solid var(--border);
+}
+
+.pay-option.option-danger:hover { border-color: var(--danger); }
+
+.pay-option.option-safe {
+  background: var(--success-soft);
+  border: 2px solid var(--border);
+}
+
+.pay-option.option-safe:hover { border-color: var(--success); }
+
+.pay-option .po-icon { font-size: 32px; margin-bottom: 8px; }
+
+.pay-option .po-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.pay-option .po-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.pay-option .po-tag {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.po-tag.tag-d { background: var(--danger); color: var(--card-bg); }
+.po-tag.tag-s { background: var(--success); color: var(--card-bg); }
+
+.payment-detail {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.payment-row + .payment-row { border-top: 1px solid var(--border); }
+.payment-row .label { color: var(--text-secondary); }
+
+.payment-warning {
+  background: var(--danger-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--danger);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+
+.payment-warning.info {
+  background: var(--primary-soft);
+  border-color: var(--border);
+  color: var(--primary-dark);
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.pay-btn:active { transform: scale(0.98); }
+
+.pay-btn-danger {
+  background: var(--danger);
+  color: #FAF7F2;
+  box-shadow: 0 4px 12px rgba(184,138,138,0.3);
+}
+
+.pay-btn-safe {
+  background: var(--success);
+  color: #FAF7F2;
+  box-shadow: 0 4px 12px rgba(157,174,140,0.3);
+}
+
+.pay-btn-report {
+  background: var(--warning);
+  color: #FAF7F2;
+  box-shadow: 0 4px 12px rgba(201,172,133,0.3);
+}
+
+.pay-btn-quit {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.pay-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ========== Result ========== */
+.result-page { text-align: center; padding: 20px 16px; }
+
+.result-icon { font-size: 72px; margin-bottom: 16px; }
+
+.result-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--text); letter-spacing: 0.5px; }
+
+.result-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.score-ring {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 24px;
+}
+
+.score-ring svg { transform: rotate(-90deg); }
+
+.score-ring .ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 10;
+}
+
+.score-ring .ring-fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.score-ring .ring-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.score-ring .ring-num {
+  font-size: 38px;
+  font-weight: 700;
+  display: block;
+}
+
+.score-ring .ring-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.risk-analysis {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  text-align: left;
+  border: 1px solid var(--border);
+}
+
+.risk-analysis h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+
+.risk-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.risk-item + .risk-item { border-top: 1px solid var(--border); }
+
+.risk-item .icon { flex-shrink: 0; width: 24px; text-align: center; }
+
+.risk-item .desc b { display: block; margin-bottom: 2px; color: var(--text); }
+.risk-item .desc span { color: var(--text-secondary); font-size: 13px; }
+
+.correct-actions {
+  background: var(--success-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.correct-actions h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--success);
+}
+
+.correct-actions li {
+  font-size: 14px;
+  padding: 4px 0;
+  color: var(--success);
+  list-style: none;
+  display: flex;
+  gap: 6px;
+  line-height: 1.6;
+}
+
+.result-actions { display: flex; gap: 10px; }
+
+.result-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-retry { background: var(--primary); color: #FAF7F2; }
+.btn-share { background: var(--primary-soft); color: var(--primary-dark); }
+
+/* ========== Sell Scenario Cards ========== */
+.sell-scenario-list { display: flex; flex-direction: column; gap: 12px; }
+
+.sell-scenario-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border);
+}
+
+.sell-scenario-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary-light);
+}
+
+.sell-scenario-card .sc-icon {
+  width: 50px; height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sell-scenario-card .sc-info { flex: 1; }
+.sell-scenario-card .sc-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
+.sell-scenario-card .sc-info p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.sell-scenario-card .sc-arrow { color: var(--text-secondary); font-size: 18px; }
+
+/* ========== Order Card ========== */
+.order-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.order-card .oc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 12px;
+}
+
+.order-card .oc-no { font-size: 12px; color: var(--text-secondary); font-family: monospace; }
+.order-card .oc-status { font-size: 12px; color: var(--success); font-weight: 600; }
+.order-card .oc-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; color: var(--text); }
+.order-card .oc-row .label { color: var(--text-secondary); }
+
+/* ========== Payment Toast & Animation ========== */
+.pay-toast {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-30px);
+  background: var(--text);
+  color: var(--card-bg);
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(74,69,65,0.25);
+  display: none;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  max-width: 360px;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.pay-toast.show {
+  display: flex;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.pay-toast .pt-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.pay-toast .pt-body { flex: 1; font-size: 13px; line-height: 1.5; }
+.pay-toast .pt-title { font-weight: 600; margin-bottom: 2px; font-size: 13px; }
+.pay-toast .pt-amount { color: var(--danger-soft); font-weight: 700; }
+
+.pay-processing {
+  position: fixed;
+  inset: 0;
+  background: rgba(74,69,65,0.45);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+.pay-processing.show { display: flex; }
+
+.pay-processing .pp-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 28px 36px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(74,69,65,0.3);
+  min-width: 240px;
+}
+
+.pay-processing .pp-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  animation: ppSpin 0.8s linear infinite;
+}
+
+.pay-processing .pp-check {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #FAF7F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  animation: ppPop 0.4s ease;
+}
+
+@keyframes ppSpin { to { transform: rotate(360deg); } }
+@keyframes ppPop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.pay-processing .pp-text { font-size: 15px; font-weight: 600; color: var(--text); }
+.pay-processing .pp-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+/* ========== Utilities ========== */
+.hidden { display: none !important; }
+
+/* ========== Responsive ========== */
+@media (min-width: 768px) {
+  .header h1 { font-size: 24px; }
+  .screen { padding: 24px 32px; }
+  .welcome-hero { padding: 70px 40px 40px; }
+  .welcome-hero .shield-icon { font-size: 88px; }
+  .welcome-hero h2 { font-size: 36px; }
+  .welcome-hero p { font-size: 17px; max-width: 520px; }
+  .welcome-stats { gap: 48px; }
+  .welcome-stats .stat-num { font-size: 32px; }
+  .welcome-actions { flex-direction: row; justify-content: center; }
+  .start-btn, .sell-entry-btn { font-size: 17px; padding: 15px 52px; }
+
+  .product-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .product-img { height: 180px; font-size: 56px; }
+  .product-info { padding: 14px 16px; }
+  .product-info h3 { font-size: 16px; }
+  .product-info .price { font-size: 20px; }
+
+  #detailContent { max-width: 600px; margin: 0 auto; }
+  .detail-img { height: 300px; font-size: 100px; }
+  .detail-title { font-size: 24px; }
+
+  .chat-container { max-width: 600px; }
+  .msg { font-size: 15px; padding: 12px 16px; }
+  .choice-btn { font-size: 15px; padding: 14px 18px; }
+
+  .payment-page { max-width: 520px; margin: 0 auto; }
+  .result-page { max-width: 620px; margin: 0 auto; }
+  .result-title { font-size: 28px; }
+
+  .sell-page { max-width: 600px; margin: 0 auto; }
+}
+
+@media (min-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .product-img { height: 200px; font-size: 64px; }
+  .welcome-hero { padding: 90px 40px 50px; }
+  .welcome-hero .shield-icon { font-size: 100px; }
+  .welcome-hero h2 { font-size: 42px; }
+  .payment-compare { gap: 20px; }
+}
+
+@media (max-width: 480px) {
+  .screen { padding: 14px; }
+  .product-grid { gap: 8px; }
+  .product-img { height: 120px; font-size: 40px; }
+  .payment-compare { grid-template-columns: 1fr; gap: 10px; }
+  .header { padding: 8px 14px; }
+  .header h1 { font-size: 16px; gap: 4px; }
+  .header .subtitle { display: none; }
+  .header .sim-badge { font-size: 10px; padding: 2px 8px; }
+  .back-btn { width: 32px; height: 32px; font-size: 16px; }
+  .disclaimer { padding: 6px 10px; font-size: 11px; margin-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="back-btn" id="backBtn" onclick="goBack()"><i class="ph ph-arrow-left"></i></button>
+      <div>
+        <h1><i class="ph ph-shield-check"></i> 防骗市集</h1>
+        <div class="subtitle">沉浸式反诈体验平台</div>
+      </div>
+    </div>
+    
+
+
+    <button class="sim-badge" style="cursor: pointer; transition: all 0.2s;">
+      <i class="ph ph-user-focus"></i> 反诈小卫士
+    </button>
+  </div>
+</div>
+
+<!-- Screen: Welcome -->
+<div class="screen active" id="screen-welcome">
+  <div class="disclaimer"><i class="ph ph-lock-key"></i> 本平台所有商品、聊天、支付均为反诈教育模拟，不产生真实交易。</div>
+  
+  <div class="welcome-hero">
+    <div class="shield-icon"><i class="ph ph-detective"></i></div>
+    <h2>你能识破骗局吗？</h2>
+    <p>这里是一个模拟交易市场，商品琳琅满目，但每个交易背后都可能暗藏诈骗陷阱。</p>
+    
+    <div class="welcome-stats">
+      <div class="stat">
+        <div class="stat-num">96.2%</div>
+        <div class="stat-label">的人中过招</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">种常见骗局</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">分钟即可体验</div>
+      </div>
+    </div>
+    
+    <div class="welcome-actions">
+      <button class="start-btn" onclick="showScreen('market')">
+        <i class="ph ph-shopping-cart" style="font-size: 20px;"></i> 我要买（识别骗局）
+      </button>
+      <button class="sell-entry-btn" onclick="showScreen('sell')">
+        <i class="ph ph-tag" style="font-size: 20px;"></i> 我要卖（防骗测试）
+      </button>
+    </div>
+  </div>
+
+
+
+  <div style="margin-top: 40px; text-align: center; font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 10px;">
+    <span style="background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 20px;"><i class="ph ph-mask-happy"></i> 寓教于乐 · 沉浸体验 · 提升防骗意识</span>
+  </div>
+</div>
+
+<!-- Screen: Market -->
+<div class="screen" id="screen-market">
+  <div class="disclaimer"><i class="ph ph-lock-key"></i> 本页面所有商品均为反诈教育模拟，不产生真实交易。</div>
+  <div class="market-top-bar">
+    <div class="search-bar">
+      <span class="search-icon"><i class="ph ph-magnifying-glass"></i></span>
+      <input type="text" placeholder="搜索商品..." id="searchInput" oninput="filterProducts()">
+    </div>
+    <button class="sell-fab" onclick="showScreen('sell')">+ 我要卖</button>
+  </div>
+  <div class="category-tabs" id="categoryTabs">
+    <div class="cat-tab active" onclick="filterByCategory('全部', this)">全部</div>
+    <div class="cat-tab" onclick="filterByCategory('数码', this)">数码</div>
+    <div class="cat-tab" onclick="filterByCategory('服务', this)">服务</div>
+    <div class="cat-tab" onclick="filterByCategory('社交', this)">社交</div>
+    <div class="cat-tab" onclick="filterByCategory('生活', this)">生活</div>
+    <div class="cat-tab" onclick="filterByCategory('娱乐', this)">娱乐</div>
+  </div>
+  <div class="risk-legend">
+    <span>风险图例：</span>
+    <span><span class="risk-dot safe"></span> 低风险</span>
+    <span><span class="risk-dot suspicious"></span> 可疑</span>
+    <span><span class="risk-dot danger"></span> 高风险</span>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</div>
+
+<!-- Screen: Detail -->
+<div class="screen" id="screen-detail"><div id="detailContent"></div></div>
+
+<!-- Screen: Friend Profile -->
+<div class="screen" id="screen-profile"><div id="profileContent"></div></div>
+
+<!-- Screen: Chat -->
+<div class="screen" id="screen-chat" style="padding:0;">
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-choices" id="chatChoices"></div>
+  </div>
+</div>
+
+<!-- Screen: Payment -->
+<div class="screen" id="screen-payment"><div class="payment-page" id="paymentContent"></div></div>
+
+<!-- Screen: Result -->
+<div class="screen" id="screen-result"><div class="result-page" id="resultContent"></div></div>
+
+<!-- Screen: Sell -->
+<div class="screen" id="screen-sell">
+  <div class="sell-page">
+    <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;"><i class="ph ph-archive"></i> 我要卖 — 选择你的商品</h2>
+    <div class="disclaimer"><i class="ph ph-lock-key"></i> 模拟场景：你发布商品后会有"买家"联系你，但其中可能暗藏骗局。你能识破吗？</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">选择一个商品开始你的卖家体验：</p>
+    <div class="sell-scenario-list" id="sellScenarioList"></div>
+  </div>
+</div>
+
+<!-- Screen: Sell Chat -->
+<div class="screen" id="screen-sell-chat" style="padding:0;">
+  <div class="chat-container">
+    <div class="chat-messages" id="sellChatMessages"></div>
+    <div class="chat-choices" id="sellChatChoices"></div>
+  </div>
+</div>
+
+<!-- Screen: Sell Result -->
+<div class="screen" id="screen-sell-result"><div class="sell-result result-page" id="sellResultContent"></div></div>
+
+<!-- 全局：支付处理动画 -->
+<div class="pay-processing" id="payProcessing">
+  <div class="pp-card">
+    <div class="pp-spinner" id="ppSpinner"></div>
+    <div class="pp-text" id="ppText">支付处理中…</div>
+    <div class="pp-sub" id="ppSub">正在与支付网关安全通信</div>
+  </div>
+</div>
+
+<!-- 全局：扣款 Toast -->
+<div class="pay-toast" id="payToast">
+  <div class="pt-icon"><i class="ph ph-credit-card"></i></div>
+  <div class="pt-body">
+    <div class="pt-title">手机银行 · 扣款通知</div>
+    <div>账户尾号 8899 完成支付 <span class="pt-amount" id="ptAmount">-¥0.00</span></div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+const PRODUCTS = [
+  { id:1, icon:'ph ph-smartphone', img:'ccda416978fdecc28f8c0668c9e5e445.jpg', bg:'#D0D6E2', title:'iPhone 17 Pro Max 256G', price:3299, originalPrice:9999, tag:'超低价', tagType:'danger', risk:'danger', seller:'急出数码小王', sellerAvatar:'ph ph-user', sellerDesc:'信用良好 | 已实名认证', desc:'全新未拆封，朋友送的用不上，亏本出，诚心要的来，价格可小刀。支持当面交易，外地可邮寄。', category:'数码', scenario:'phone' },
+  { id:2, icon:'ph ph-phone-call', img:'https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=600&h=450&fit=crop', bg:'#D9E4EA', title:'抖音直播会员取消续费电话', price:0, originalPrice:null, tag:'陌生来电', tagType:'danger', risk:'danger', seller:'来电：抖音客服中心', sellerAvatar:'ph ph-headset', sellerDesc:'号码 00-196-8532 · 未经官方核实', desc:'陌生号码自称抖音官方客服，说你误开了直播会员，不马上取消就会每月扣费，并引导你按电话提示操作银行卡。', category:'服务', scenario:'douyin' },
+  { id:3, icon:'ph ph-user-circle', img:'image.png', bg:'#E8DFD0', title:'好友急借转账', price:1200, originalPrice:null, tag:'熟人求助', tagType:'warning', risk:'danger', seller:'大学同学阿航', sellerAvatar:'ph ph-user-circle', sellerDesc:'你通讯录里的老同学 | 新账号', desc:'一个和你好友头像、昵称、朋友圈都很像的账号突然联系你，说手机坏了、微信限额，想让你临时转一笔钱救急。', category:'社交', scenario:'friend' },
+  { id:4, icon:'ph ph-game-controller', img:'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=600&h=450&fit=crop', bg:'#D5E2D5', title:'Switch游戏机+10游戏', price:800, originalPrice:2999, tag:'到付验货', tagType:'warning', risk:'suspicious', seller:'搬家甩卖小美', sellerAvatar:'ph ph-user', sellerDesc:'活跃用户 | 好评率98%', desc:'搬家急出！Switch续航版+10个热门游戏卡带，几乎全新。对方称支持顺丰到付验货，但要求先付定金，签收时又无法开机验货。', category:'数码', scenario:'switch' },
+  { id:5, icon:'ph ph-shopping-bag', img:'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&h=450&fit=crop', bg:'#DEDEE8', title:'品牌包包代购 专柜正品', price:1500, originalPrice:8999, tag:'内部价', tagType:'danger', risk:'danger', seller:'海外代购Lisa', sellerAvatar:'ph ph-user-focus', sellerDesc:'代购3年 | 回头客多', desc:'海外专柜“内部价”，朋友圈返图很多，对方要求先付定金锁货，后续又以清关保证金、物流保价费等理由继续收费。', category:'生活', scenario:'bag' },
+  { id:6, icon:'ph ph-ticket', img:'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=450&fit=crop', bg:'#EADADA', title:'周杰伦演唱会门票转让 内场', price:380, originalPrice:1280, tag:'急转', tagType:'danger', risk:'danger', seller:'临时有事小赵', sellerAvatar:'ph ph-user', sellerDesc:'信用良好 | 实名认证', desc:'抢到的内场票，临时出差去不了，原价1280亏本380转出。对方称可通过“备用转赠链接”改实名，但要求填写身份证和验证码。', category:'娱乐', scenario:'ticket' }
+];
+
+const SCENARIOS = {
+  friend: { name:'仿冒好友借钱骗局', steps:[
+    { seller:'在吗？我是阿航，我手机刚摔坏了，微信也登不上，只能先用这个小号联系你。你现在方便帮我个忙吗？', riskFlag:'用"小号/手机坏了"解释身份异常', choices:[{ text:'你先别急，我打你原来的手机号确认一下', safe:true, score:30 },{ text:'怎么了？你说，我能帮就帮', safe:false, score:0 },{ text:'我先看看你的朋友圈', safe:true, score:10, action:'profile' }] },
+    { seller:'我在医院陪我妈做检查，缴费窗口这边只能银行卡转账。我微信限额了，你能先帮我转 1200 吗？晚上我就还你。', sellerIfUnsafe:'太好了，真是救急。我在医院陪我妈做检查，窗口催得很急，你先帮我转 1200，晚上我肯定还你。', riskFlag:'亲情急事 + 时间压力', choices:[{ text:'医院缴费不该转私人卡，你发语音或视频确认一下', safe:true, score:30 },{ text:'听起来挺急的，卡号发我吧', safe:false, score:0 }] },
+    { seller:'我这边信号不好，没法视频。你还不信我吗？朋友圈你也看到了，就是我本人。先转一下，真的急。', sellerIfUnsafe:'卡号：6222 8888 0000 1234，户名：刘某。你转完截个图，我马上处理缴费。', riskFlag:'拒绝语音视频，用关系施压', choices:[{ text:'不能语音视频就不转，我联系共同好友核实', safe:true, score:35 },{ text:'行吧，我相信你，马上转', safe:false, score:0 }] },
+    { seller:'算了，我知道你谨慎。那你先转 300 也行，窗口先排着，剩下的我再想办法。', sellerIfUnsafe:'收到截图了！但窗口说还差 800 才能缴费，你再补一下，真的最后一次。', riskFlag:'降低金额门槛 / 继续加码', choices:[{ text:'哪怕 300 也不行，未核实身份前不转账', safe:true, score:25 },{ text:'300 不多，那我先转一点', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-user-focus',title:'仿冒熟人账号',desc:'头像、昵称、朋友圈都可以复制，"看起来像"不等于本人' },{ icon:'ph ph-phone-x',title:'拒绝语音视频确认',desc:'骗子常用手机坏了、信号差、正在医院等理由回避实时验证' },{ icon:'ph ph-warning-circle',title:'急事施压',desc:'家人生病、缴费窗口催促，会让你跳过核实步骤' },{ icon:'ph ph-hand-coins',title:'小额试探',desc:'先借 300/1200 降低心理门槛，转一次后可能继续追加' },{ icon:'ph ph-users',title:'共同好友核实缺失',desc:'真正安全的做法是拨打原号码或找共同好友确认' }], correct:['涉及借钱转账，必须通过原手机号、语音或视频确认本人','朋友圈、头像、昵称都可以仿冒，不能作为身份凭证','越急越要慢，先核实再决定','收款户名和好友姓名不一致时直接拒绝','可以联系共同好友或家人做二次确认'] },
+  phone: { name:'iPhone超低价骗局', steps:[
+    { seller:'兄弟你眼光真好，这台是我朋友公司年会抽奖中的，他用安卓不喜欢苹果，让我帮忙处理掉。我加价 200 转给你，都比咸鱼回收商出的高，咱俩双赢。', riskFlag:'编造低价来源：年会奖品/朋友送的', choices:[{ text:'年会奖品的话有发票或获奖证明吗？没凭证我不敢买', safe:true, score:20 },{ text:'原来是这样，那确实便宜，我感兴趣', safe:false, score:0 }] },
+    { seller:'你好，这个iPhone确实是全新未拆封的，盒子塑封都在。你要的话今天能发顺丰，明天就能到。', riskFlag:'用"全新塑封"强化可信度', choices:[{ text:'价格这么低，能走平台担保交易吗？', safe:true, score:20 },{ text:'好的，我很感兴趣，怎么付款？', safe:false, score:0 }] },
+    { seller:'走平台的话要扣手续费，而且到账慢。直接微信转账的话我再给你优惠200，3099就行。', sellerIfUnsafe:'太好了！直接微信转账最方便，我给你优惠200，3099就行。加我微信：scammer_888。', riskFlag:'引导脱离平台', choices:[{ text:'我不加微信，我直接在闲鱼上拍下付款', safe:true, score:15, branch:'delay' },{ text:'还是走平台吧，安全一些', safe:true, score:25 },{ text:'那好吧，加你微信转账', safe:false, score:0 }] },
+    { seller:'别担心，我把身份证照片发给你，而且可以视频验货。你先转1000定金，我马上发快递。', sellerIfUnsafe:'好嘞！你先转1000定金，我马上安排发快递。这是我的收款码👇\n[收款码：微信转账 ¥1000]\n转完截图给我确认哈～', riskFlag:'索要定金', choices:[{ text:'不了，这个价格不太合理，市场价至少七八千', safe:true, score:30 },{ text:'可以，发一下你的收款码', safe:false, score:0 }] },
+    { seller:'哎你这人怎么这么墨迹！就剩最后一台了，刚才有个人也想要。你要不要？', sellerIfUnsafe:'收到收到！快递单号发你：SF1234567890。不过快递费要到付28元哦，发货前你再转28过来～\n[收款码：微信转账 ¥28]', riskFlag:'制造紧迫感', choices:[{ text:'你卖给别人吧，我不急', safe:true, score:25 },{ text:'别别别，我要！马上转给你', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-mask-happy',title:'编造低价"来源故事"',desc:'"年会奖品/朋友送的"是经典话术——无发票无凭证，目的是合理化超低价' },{ icon:'ph ph-warning-circle',title:'价格异常偏低',desc:'iPhone 17 Pro Max 256G 官方售价9999元，3299远低于正常价格' },{ icon:'ph ph-signpost',title:'引导私下交易',desc:'以手续费为由诱导脱离平台，私下转账无保障' },{ icon:'ph ph-alarm',title:'制造紧迫感',desc:'"最后一台""别人也想要"，催促你快速做决定' },{ icon:'ph ph-hand-coins',title:'先付定金套路',desc:'先转定金再发货，收到钱后可能直接消失' }], correct:['坚持使用平台担保交易，不私下转账','对明显低于市场价的商品保持警惕（即使走平台也可能被"拖延发货"骗）','不被催促性话术影响判断','遇到"无发票低价"商品要求提供购买凭证'] },
+  douyin: { name:'冒充抖音官方取消续费电话骗局', steps:[
+    { seller:'您好，这里是抖音客服中心，系统显示您开通了直播会员连续包月。如果今天不取消，下个月会自动扣 598 元。请问您现在方便处理吗？', riskFlag:'陌生来电冒充官方 + 制造扣费恐慌', choices:[{ text:'我先挂断，去抖音 App 官方客服核实这个号码', safe:true, score:30 },{ text:'我没开通过啊，那你快帮我取消', safe:false, score:0 }] },
+    { seller:'我们这边只是提醒您风险，错过今天 18 点就不能拦截扣费了。为了避免损失，请保持通话，不要退出当前页面。', sellerIfUnsafe:'别着急，我们可以帮您紧急关闭续费。请保持通话，不要挂断，也不要去问其他客服，流程中断就会自动扣费。', riskFlag:'要求不挂电话，阻断你核实', choices:[{ text:'真正官方不会阻止我核实，我现在挂断', safe:true, score:25 },{ text:'好，那我按你说的继续', safe:false, score:0 }] },
+    { seller:'请打开手机银行，找到银行卡安全中心。我们需要帮您关闭抖音免密扣款协议，不会收取任何费用。', sellerIfUnsafe:'现在打开手机银行，点“银行卡管理”，我一步步教您关闭抖音扣费协议。这个过程不会扣钱，只是验证账户安全。', riskFlag:'诱导操作银行卡', choices:[{ text:'取消平台会员应在抖音 App 内完成，不该打开手机银行', safe:true, score:30 },{ text:'我已经打开手机银行了，下一步点哪里？', safe:false, score:0 }] },
+    { seller:'页面会弹出一个验证码，您念给我，我帮您同步到系统里取消协议。注意，验证码不是扣款，是取消续费确认。', sellerIfUnsafe:'现在会收到银行验证码，您直接读给我。短信上写“支付/扣款”不用管，那是银行模板，实际是取消续费。', riskFlag:'索要银行验证码', choices:[{ text:'银行验证码等于资金授权，任何人索要都不能给', safe:true, score:35 },{ text:'验证码是 482913，你帮我取消吧', safe:false, score:0 }] },
+    { seller:'您这边操作超时，系统已经生成一笔 598 元冻结款。想退回的话，需要再做一次“安全验证”，否则会影响征信。', sellerIfUnsafe:'刚才验证码已提交，但系统提示还差最后一步验证。请点击“转账验证”，输入 598，备注“取消续费”，完成后会原路退回。', riskFlag:'假解冻/假验证，继续骗转账', choices:[{ text:'这就是诈骗，我挂断并到抖音官方客服举报该号码', safe:true, score:30 },{ text:'那我按你说的转 598 验证一下', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-phone-x',title:'陌生号码冒充官方',desc:'来电显示和自称工号都不能证明身份，必须从 App 内官方入口核实' },{ icon:'ph ph-clock-countdown',title:'制造扣费倒计时',desc:'“今天不处理就自动扣费”是在制造恐慌，让你来不及思考' },{ icon:'ph ph-bank',title:'引导操作银行卡',desc:'取消平台会员不需要打开手机银行，更不需要转账验证' },{ icon:'ph ph-password',title:'索要银行验证码',desc:'短信验证码就是资金授权，任何人索要都不能提供' },{ icon:'ph ph-chat-circle-dots',title:'阻止挂断核实',desc:'真正官方客服不会要求你保持通话、不要咨询其他渠道' }], correct:['接到所谓平台客服电话，先挂断，再从 App 官方入口核实','取消会员续费只在对应 App 内操作，不按电话指挥打开银行 App','不共享屏幕、不透露短信验证码、银行卡号和密码','凡是要求转账验证、解冻资金、刷流水的都是诈骗','核实发现号码非官方后，及时举报并提醒家人朋友'] },
+  finance: { name:'投资理财骗局', steps:[
+    { seller:'我们老师之前是某券商首席分析师，离职后专门带散户。去年带的学员平均月收益 18%，原价 999 元的体验课，今天只要 99 元——不是为了赚钱，就是为了筛选有缘人。', riskFlag:'用"前券商首席"包装权威', choices:[{ text:'真的首席分析师不会跑出来卖 99 元的课，能提供从业资格证吗？', safe:true, score:20 },{ text:'前券商首席这么厉害？99 我能接受', safe:false, score:0 }] },
+    { seller:'欢迎加入我们的理财体验课！我带过3000+学员，很多人现在月入过万。今天特惠价99元。', riskFlag:'虚假成功案例', choices:[{ text:'日赚500是什么投资项目？有没有风险提示？', safe:true, score:20 },{ text:'月入过万！太好了，怎么报名？', safe:false, score:0 }] },
+    { seller:'我们做的是数字货币量化交易，有专业团队操盘。新手跟着操作就行，风险极低！', sellerIfUnsafe:'太棒了！我就喜欢你这样爽快又有眼光的学员。我们做的是数字货币量化交易，有专业团队操盘。新手跟着操作就行，风险极低！', riskFlag:'"风险极低"违规承诺', choices:[{ text:'"风险极低"不可信，正规投资都有风险提示', safe:true, score:25 },{ text:'好的，99也不贵，进群学学', safe:false, score:0 }] },
+    { seller:'先投5000体验一下，收益当天到账。你看群里其他学员的收益截图，都是真的！', sellerIfUnsafe:'很好，你已经迈出了致富的第一步。现在先投5000体验一下，收益当天到账。你看群里其他学员的收益截图，都是真的！', riskFlag:'诱导投入资金', choices:[{ text:'收益截图可以伪造，天上不会掉饼，我退出', safe:true, score:30 },{ text:'5000也不多，先试试水', safe:false, score:0 }] },
+    { seller:'你的模拟账户已经赚了800元！现在充值1万可以放大收益，保证本金安全。', sellerIfUnsafe:'恭喜！你的体验资金已经赚了800元，看我没骗你吧？现在充值1万可以开启真实交易放大收益，保证本金安全哦！', riskFlag:'保本承诺违法', choices:[{ text:'"保证本金安全"是违法承诺，这是诈骗无疑', safe:true, score:25 },{ text:'模拟盘确实赚了，充1万试试', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-graduation-cap',title:'伪造"权威身份"建立信任',desc:'"前券商首席/某机构高管"无法核实——真正的金融从业者不会出来卖低价课' },{ icon:'ph ph-chart-line-down',title:'高回报低风险承诺',desc:'"日赚500""风险极低"，正规投资不可能做此保证' },{ icon:'ph ph-image-square',title:'虚假成功案例',desc:'收益截图、学员数量均可伪造' },{ icon:'ph ph-arrow-fat-up',title:'诱导加大投入',desc:'从99→5000→10000逐步加大，典型杀猪盘节奏' },{ icon:'ph ph-shield-check',title:'保本承诺违法',desc:'任何"保证本金安全"的说法都违反金融法规' }], correct:['高回报一定伴随高风险，不存在稳赚不赔','不参与任何需要先交钱才能"学习赚钱"的项目','投资只选正规持牌金融机构的产品','遇到"权威身份"包装，要求出示从业资格证'] },
+  switch: { name:'二手数码到付验货骗局', steps:[
+    { seller:'下个月搬家，Switch 续航版加 10 个游戏卡带一起 800 出。机器很新，原价快三千了，我就是急着处理，不想一件件卖。', riskFlag:'低价打包 + 急出理由', choices:[{ text:'Switch 加 10 张卡 800 太低了，能提供购买记录和开机视频吗？', safe:true, score:25 },{ text:'800 打包确实划算，我想要', safe:false, score:0 }] },
+    { seller:'你不放心的话可以走顺丰到付验货，货到了你看外观没问题再付快递员钱，这样总安全吧？', sellerIfUnsafe:'我知道你怕被骗，所以我支持顺丰到付验货。你收到货再付 800 给快递员，我这边很有诚意了。', riskFlag:'用到付验货降低警惕', choices:[{ text:'到付不等于能完整验机，我要平台担保并开机验收', safe:true, score:30 },{ text:'到付验货听起来挺安全，那就顺丰吧', safe:false, score:0 }] },
+    { seller:'不过问的人挺多，我跑快递也麻烦。你先付 200 定金，我立刻给你留货发出，到付时再付剩下 600。', sellerIfUnsafe:'那我现在去顺丰。你先转 200 定金，不然我白跑一趟，剩下 600 你到付给快递员。', riskFlag:'到付前先收定金', choices:[{ text:'定金脱离平台没有保障，我不私下转', safe:true, score:30 },{ text:'200 不多，我先转定金', safe:false, score:0 }] },
+    { seller:'顺丰电子产品规定只能看外观，不能当场开机试。你看机器和卡带都在就签收，回家再慢慢试，不满意我包退。', sellerIfUnsafe:'快递员可能不让你开机，这是顺丰规定。你看外壳没磕碰、卡带数量对就签收，回家试了有问题我负责。', riskFlag:'不能开机验货 / 货不对板', choices:[{ text:'不能开机验货就不能确认好坏，我拒收并走平台交易', safe:true, score:35 },{ text:'外观看着没问题就行，我先签收', safe:false, score:0 }] },
+    { seller:'你放心，我账号好评很多，不会为了这点钱骗你。快递快到了，你别临时不要，我还得搬家没时间折腾。', sellerIfUnsafe:'你签收后发现有问题再联系我就行。机器放久了可能没电，先充一晚上，别急着退。', riskFlag:'签收后拖延售后', choices:[{ text:'签收后风险在我，无法验机就不收', safe:true, score:30 },{ text:'那我签收后回家再试', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-airplane-tilt',title:'搬家急出包装低价',desc:'“搬家/出国/急处理”用来合理化远低于市场价的打包价' },{ icon:'ph ph-tag',title:'价格异常偏低',desc:'Switch+10张游戏卡 800 元明显低于正常二手价' },{ icon:'ph ph-truck',title:'到付验货不等于安全',desc:'很多到付件只能看外包装，不能完整开机测试或逐项验卡带' },{ icon:'ph ph-hand-coins',title:'先收定金',desc:'到付前先要 200 定金，收到后可能不发货或发问题货' },{ icon:'ph ph-game-controller',title:'货不对板/坏机器',desc:'签收后可能发现是坏机器、模型机、假卡带或缺配件，维权困难' }], correct:['二手数码坚持平台担保交易，到货开机验收后再确认','不要相信“到付验货”就一定安全，先问清能否开箱开机验机','不私下支付定金、留货费、跑腿费','价格明显低于市场价时优先怀疑货源和成色','无法完整验机时直接拒收或放弃交易'] },
+  bag: { name:'低价品牌包代购骗局', steps:[
+   { seller:'亲～这款包专柜原价 8999，我表姐在巴黎专柜做柜姐，每月有员工折扣额度。刚好有客户临时不要了，1500 就能转你，带小票，支持验货。', riskFlag:'编造海外柜姐/内部价故事', choices:[{ text:'专柜正品 1.7 折太不合理，能走官方平台或专柜自提吗？', safe:true, score:25 },{ text:'这个价太划算了，我想要', safe:false, score:0 }] },
+   { seller:'亲你看我朋友圈，都是老客户返图，还有鉴定证书。这个价今天就一个名额，你先付 500 定金，我马上帮你锁货。', sellerIfUnsafe:'我把朋友圈返图和小票都发你看了，老客户都这么买。你先付 500 定金，剩下尾款等我发货前再补。', riskFlag:'朋友圈返图包装信任 + 定金锁货', choices:[{ text:'朋友圈和证书截图都能伪造，没见实物和官方凭证不付定金', safe:true, score:30 },{ text:'500 定金不多，我先锁一个', safe:false, score:0 }] },
+   { seller:'包已经到国内清关口了，海关抽检需要补 280 清关保证金，清关后会原路退回。你现在不补，包会被退回巴黎。', sellerIfUnsafe:'定金收到啦，亲放心。刚刚物流通知海关抽检，需要补 280 清关保证金，清完马上退，你先垫一下。', riskFlag:'清关保证金继续加码', choices:[{ text:'清关税费不该转给私人，所谓保证金退回很可疑', safe:true, score:30 },{ text:'都付定金了，280 我先补上', safe:false, score:0 }] },
+   { seller:'物流单号已经出来了，但海外件更新慢。快递那边建议补 99 保价费，不然丢件只赔运费，这个包太贵了不保价不安全。', sellerIfUnsafe:'清关保证金收到了，单号给你：HK88991234。物流暂时查不到正常，海外件慢。你再补 99 保价费，丢件全额赔。', riskFlag:'假物流 + 保价费小额追加', choices:[{ text:'查不到真实物流还继续收费，我要求退款并停止交易', safe:true, score:30 },{ text:'99 不多，那我再补一次', safe:false, score:0 }] },
+   { seller:'亲你别着急，我做代购这么久不会为了几百块骗你。你再补完尾款 1000，我马上让仓库发顺丰。晚一点仓库下班就得明天了。', sellerIfUnsafe:'就差尾款 1000 了，仓库催我结算。你补完我马上发顺丰，不然前面的定金和清关费都卡着退不了。', riskFlag:'沉没成本 + 尾款催付', choices:[{ text:'你一直追加费用且无法提供官方凭证，我不再付款并举报', safe:true, score:30 },{ text:'前面都付了，尾款也补了吧', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-globe',title:'编造海外柜姐/内部价',desc:'“亲戚在专柜”“客户临时不要”常用来解释不合理低价' },{ icon:'ph ph-money',title:'价格严重异常',desc:'专柜正品 1-2 折通常不可信，要么假货，要么根本没有货' },{ icon:'ph ph-users',title:'朋友圈和鉴定截图可伪造',desc:'返图、小票、鉴定证书、聊天记录都可以盗图或 PS' },{ icon:'ph ph-hand-coins',title:'定金后连续加码',desc:'先骗小额定金，再以清关费、保证金、保价费、尾款继续收费' },{ icon:'ph ph-truck',title:'假物流/空包/假货',desc:'骗子可能发假单号、空包或高仿包，拖到你错过维权时机' }], correct:['明显低于市场价的正品奢侈品先默认高风险','不因朋友圈返图、鉴定截图、小票截图就付款','不向私人账户支付定金、清关保证金、保价费','清关税费应有正规渠道和票据，不听私人代付话术','没有官方凭证和平台担保时及时停止交易并举报'] },
+  ticket: { name:'演唱会假官方转赠链接骗局', steps:[
+    { seller:'兄弟你眼光真好！这张周杰伦内场票是我老婆抢到的，公司临时派我出差，时间撞上了去不了。原价1280，现在380转你，今晚之前能定最好。', riskFlag:'低价急转 + 时间压力', choices:[{ text:'这么低价不太正常，票能在大麦 App 后台官方转赠吗？', safe:true, score:25 },{ text:'真划算！我要了，怎么转给我？', safe:false, score:0 }] },
+    { seller:'这张不是我个人大麦订单，是公司团体票名额，正式出票前可以改实名。票务那边给了一个实名登记链接，填你的信息就能换绑。', sellerIfUnsafe:'你放心，公司团体票不走个人订单转赠，都是票务系统登记实名。你点这个链接填资料就行：http://damai-transfer-vip.xxx', riskFlag:'假冒票务实名登记链接', choices:[{ text:'不能在官方 App 或官方客服核实的票源，我不点外部登记链接', safe:true, score:30 },{ text:'那你把登记链接发我，我填一下', safe:false, score:0 }] },
+    { seller:'链接里需要填姓名、身份证号、手机号，实名票都要这些信息才能换绑。你填完截图给我，我这边确认一下。', sellerIfUnsafe:'页面打开后填你的姓名、身份证号和手机号。别填错，实名信息一旦提交就不能改了。', riskFlag:'套取身份证和手机号', choices:[{ text:'陌生链接不能填身份证和手机号，我只认官方 App 页面', safe:true, score:30 },{ text:'好，我把身份证信息填进去', safe:false, score:0 }] },
+    { seller:'系统会给你发一条验证码，你发我一下，我帮你在卖家端确认转赠。验证码只是换绑确认，不涉及付款。', sellerIfUnsafe:'验证码收到没？你直接发我，我这边卖家端要输入验证码才能完成转赠。别拖太久，链接 3 分钟就过期。', riskFlag:'索要短信验证码', choices:[{ text:'验证码不能给任何人，尤其是陌生交易链接', safe:true, score:35 },{ text:'验证码是 739204，你帮我确认吧', safe:false, score:0 }] },
+    { seller:'最后一步要交80元实名换绑保证金，系统完成后自动退回。你先扫这个客服收款码，备注“周杰伦转赠”。', sellerIfUnsafe:'已经快好了，就差80元换绑保证金。你转完我马上把票推到你账号里，晚点我赶飞机没时间处理。', riskFlag:'私下收取换绑保证金', choices:[{ text:'官方平台不会让私人收保证金，我不买了并举报链接', safe:true, score:30 },{ text:'都到这一步了，80元我先转给你', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-calendar-x',title:'低价急转制造冲动',desc:'“临时出差/今晚前定”让你没时间核实票源和转赠规则' },{ icon:'ph ph-link-break',title:'假官方转赠链接',desc:'骗子伪造大麦/猫眼页面，诱导你在站外填写敏感信息' },{ icon:'ph ph-identification-card',title:'套取实名信息',desc:'姓名、身份证号、手机号可被用于后续盗号、贷款或精准诈骗' },{ icon:'ph ph-password',title:'索要短信验证码',desc:'验证码可能用于登录账号、绑定手机或确认支付，不能发给任何人' },{ icon:'ph ph-hand-coins',title:'换绑保证金套路',desc:'官方转赠不会通过私人收款码收保证金、解冻费或手续费' }], correct:['演唱会票只通过大麦/猫眼等官方 App 内转赠','不点击私聊里的“备用转赠链接”','不在陌生页面填写身份证号、手机号和验证码','不向私人账户支付换绑费、保证金、解冻费','低价急转越催越要慢，先核实规则再决定'] }
+};
+
+// "拖延发货 / 虚假发货" 分支剧情（针对 iPhone 直接平台拍下的玩家）
+const DELAY_SCENARIO = {
+  name: '低价诱饵 · 拖延发货骗局',
+  steps: [
+    {
+      seller: '好的兄弟你拍吧！不过提醒一下：因为是朋友那边走流程，这台是<b>预售单</b>，需要 10-15 天到货，你拍下我就立刻给你保留。放心，闲鱼担保交易嘛，到时候验机不满意你随时退。',
+      riskFlag: '"预售 10-15 天"是拖延骗局开场白',
+      choices: [
+        { text: '正常 iPhone 怎么会预售 10-15 天？我取消订单', safe: true, score: 30 },
+        { text: '那好吧，反正走平台担保，我等', safe: false, score: 0 }
+      ]
+    },
+    {
+      seller: '兄弟款项收到啦，闲鱼后台显示已到账（担保中）。明天就帮你安排发货，单号到时候发你，安心等～',
+      sellerIfUnsafe: '兄弟款项收到啦，闲鱼后台显示已到账（担保中）。明天就帮你安排发货，单号到时候发你，安心等～',
+      riskFlag: '"已到账担保中"让你以为安全了',
+      choices: [
+        { text: '我再想想，先申请退款吧', safe: true, score: 25 },
+        { text: '行，等你发货', safe: false, score: 0 }
+      ]
+    },
+    {
+      seller: '【3 天后】兄弟单号给你：SF1234567890，已揽件！你查一下应该有信息了。',
+      sellerIfUnsafe: '【3 天后】兄弟单号给你：SF1234567890，已揽件！你查一下应该有信息了。',
+      riskFlag: '虚假单号 / 物流永远不更新',
+      choices: [
+        { text: '我查了这单号是别人的快递，要求平台介入', safe: true, score: 30 },
+        { text: '好的，我等几天看看物流', safe: false, score: 0 }
+      ]
+    },
+    {
+      seller: '【10 天后】哎兄弟真不好意思，工厂这边出了点问题，发货又要延期 3-5 天，给你额外补个原装壳行不？',
+      sellerIfUnsafe: '【10 天后】哎兄弟真不好意思，工厂这边出了点问题，发货又要延期 3-5 天，给你额外补个原装壳行不？',
+      riskFlag: '不停道歉拖时间，等你超过维权期',
+      choices: [
+        { text: '我立刻申请退款 + 投诉，不再相信任何理由', safe: true, score: 25 },
+        { text: '送原装壳？那再等等吧', safe: false, score: 0 }
+      ]
+    },
+    {
+      seller: '【20 天后】... 该用户已注销 / 长时间未登录\n\n[闲鱼系统：订单已超过自动确认收货期，款项已自动打给卖家。如有异议请联系客服申诉。]',
+      sellerIfUnsafe: '【20 天后】... 该用户已注销 / 长时间未登录\n\n[闲鱼系统：订单已超过自动确认收货期，款项已自动打给卖家。如有异议请联系客服申诉。]',
+      riskFlag: '骗子失联 + 自动确认收货后维权困难',
+      choices: [
+        { text: '保留聊天记录和支付凭证，立即报警 + 闲鱼客服申诉', safe: true, score: 30 },
+        { text: '认栽吧，3000 多块就当买教训', safe: false, score: 0 }
+      ]
+    }
+  ],
+  risks: [
+    { icon:'ph ph-detective', title: '"拍下也是骗"——平台担保也能被钻空子', desc: '骗子用"预售 10-15 天"先稳住你，等你过了 7 天平台维权窗口才开始拖延' },
+    { icon:'ph ph-warning-circle', title: '虚假单号', desc: '给你一个真实快递公司的单号，但物流永远停在"已揽件"，或单号是别人的包裹' },
+    { icon:'ph ph-warning-circle', title: '不停道歉换时间', desc: '"工厂出问题/快递爆仓/我家里有事"——只要不消失就不算骗你' },
+    { icon:'ph ph-warning-circle', title: '自动确认收货是陷阱', desc: '闲鱼默认 10-15 天自动确认收货后打款，骗子失联，钱直接到他账户' },
+    { icon: 'ph ph-skull', title: '同一时间在骗几十个人', desc: '骗子一次发布多个低价单，等所有订单"自动确认"后注销账号跑路' }
+  ],
+  correct: [
+    '<b>低价诱饵 = 警报</b>：远低于市场价的商品本身就是骗局信号，不论是否走平台',
+    '不接受任何"预售/工厂直发/10 天到货"的二手电子产品',
+    '正常二手卖家不会催你"赶紧拍"，骗子才会',
+    '一旦发现物流异常，<b>第一时间申请退款 + 平台介入</b>，不要等',
+    '保留所有聊天记录和支付凭证，被骗金额超 3000 元立即报警'
+  ]
+};
+
+const SELL_SCENARIOS = [
+  { id:'sell_phone', emoji:'ph ph-smartphone', img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&h=300&fit=crop', bg:'#D0D6E2', title:'出售二手手机', desc:'你挂了一台二手手机，有买家来了...', buyerName:'买家 小张', buyerAvatar:'ph ph-user-circle', steps:[
+    { buyer:'你好，手机还在吗？我很想要！不过我在外地，能不能你先发货，我收到验货后再付款？', riskFlag:'要求先发货', choices:[{ text:'可以走平台担保，你先下单付款到平台，我再发货', safe:true, score:25 },{ text:'行，我先发给你，你收到了再付', safe:false, score:0 }] },
+    { buyer:'我试了下单但系统提示支付失败。你能发个收款码？我直接转给你。', buyerIfUnsafe:'太感谢了！我这就把收货地址发你，你今天能发货吗？发货后把单号给我，我收到立刻确认。', riskFlag:'谎称支付失败', choices:[{ text:'平台支付失败你联系平台客服，我只接受平台交易', safe:true, score:25 },{ text:'好吧，我发收款码给你', safe:false, score:0 }] },
+    { buyer:'我已经转了，你看下到账没？另外平台提示需要你点这个退款确认链接才能完成交易：http://xxx', buyerIfUnsafe:'收款码我扫了，转账已经发起了。你点一下这个链接确认下收货信息，点完钱就到账了：http://safe-pay.xxx', riskFlag:'钓鱼链接！', choices:[{ text:'我没收到钱，这个链接也不是平台官方的，不会点', safe:true, score:30 },{ text:'好的，我点开看看什么情况', safe:false, score:0 }] },
+    { buyer:'你是不是不想卖了？我真的很急！你点一下链接确认就行，不然我就投诉你了！', buyerIfUnsafe:'页面打开了吧？它会让你填写平台账号和短信验证码，这是确认收款用的。你填完钱就能到账，别退出页面。', riskFlag:'继续诱导填写账号和验证码', choices:[{ text:'链接开始要账号验证码了，这就是钓鱼，我立刻退出并举报', safe:true, score:20 },{ text:'那我把账号和验证码填进去', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-truck',title:'要求先发货后付款',desc:'收到货后直接消失，卖家钱货两空' },{ icon:'ph ph-x-circle',title:'谎称支付失败',desc:'诱导脱离平台，使用私下转账' },{ icon:'ph ph-link-break',title:'钓鱼链接',desc:'伪造退款/确认页面，窃取账号和资金' },{ icon:'ph ph-warning-octagon',title:'威胁投诉施压',desc:'制造恐慌让你慌乱之下点击恶意链接' }], correct:['坚持平台担保交易，不接受先发货后付款','不因"支付失败"就改用私下转账','不点击任何非平台官方的链接','不被威胁投诉所影响，可疑行为直接举报'] },
+  { id:'sell_course', emoji:'ph ph-book', img:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=300&fit=crop', bg:'#E8DFD0', title:'出售在线课程', desc:'你在卖编程课，遇到了"大客户"...', buyerName:'买家 李经理', buyerAvatar:'ph ph-briefcase', steps:[
+    { buyer:'你好，我是某公司培训负责人，想批量采购你的课程50份，总价能优惠吗？', riskFlag:'大单诱惑', choices:[{ text:'可以聊优惠，但请在平台上下单', safe:true, score:20 },{ text:'50份！当然可以优惠，您说怎么付？', safe:false, score:0 }] },
+    { buyer:'公司财务走银行汇款，需要你提供营业执照、银行开户行、账号这些信息。', buyerIfUnsafe:'太好了，我就喜欢这么爽快的合作伙伴。财务说要对公汇款，麻烦发下您的银行账号和开户行。', riskFlag:'套取敏感信息', choices:[{ text:'不方便提供这些敏感信息，还是走平台交易吧', safe:true, score:30 },{ text:'好的，我发给你公司信息', safe:false, score:0 }] },
+    { buyer:'财务已汇出，但银行说需要你先交2000元保证金才能到账，是跨行大额转账的规定。', buyerIfUnsafe:'信息收到了，财务已经发起了汇款。但银行反馈说跨行大额汇款需要您缴纳2000元保证金验证账户，否则钱会被退回。', riskFlag:'收款要先交钱？', choices:[{ text:'收款不需要交保证金，这是典型诈骗话术', safe:true, score:30 },{ text:'大额转账确实有规定吧，我打电话问问', safe:false, score:0 }] },
+    { buyer:'不交保证金这笔钱就退回了，50份大单就没了。2000块到账后秒退。', buyerIfUnsafe:'您快点决定吧，银行这边的通道只开放半小时，如果不交保证金，这5万块的大单可就没了！', riskFlag:'施压催促', choices:[{ text:'收款方不需要付钱，大单不做也不亏，我举报', safe:true, score:20 },{ text:'2000换5万的大单，值得冒险试试', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-shopping-cart-simple',title:'大单诱惑',desc:'用大额订单降低你的警惕性' },{ icon:'ph ph-identification-card',title:'索要敏感信息',desc:'借"对公付款"套取银行和身份信息' },{ icon:'ph ph-hand-coins',title:'先交保证金',desc:'收款方不可能需要先付钱' },{ icon:'ph ph-phone-x',title:'虚假银行客服',desc:'电话号码是骗子伪造的' }], correct:['大客户也应走平台交易','不向陌生人提供银行账户等敏感信息','收款绝不需要先交保证金','不拨打对方提供的"客服电话"'] },
+  { id:'sell_account', emoji:'🎮', img:'https://images.unsplash.com/photo-1592155931584-901ac15763e3?w=300&h=300&fit=crop', bg:'#E0E7FF', title:'出售游戏账号', desc:'你在卖一个原神满级账号，买家想"先验号"...', buyerName:'买家 风之子', buyerAvatar:'🧙', steps:[
+    { buyer:'老板你这账号我看上了！我玩这游戏 3 年了，懂行的。能不能先把账号密码给我，我登上去验证一下角色和圣遗物再付款？放心我玩家信誉很好。', riskFlag:'要求"先验号再付款"', choices:[{ text:'账号必须走平台官方交易，先付款托管再验号', safe:true, score:25 },{ text:'你看着挺懂行的，那我把账号给你看', safe:false, score:0 }] },
+    { buyer:'平台交易要扣 8% 手续费，太亏了。这样吧，你点这个链接进入"账号验证系统"做托管：http://account-safe-verify.xxx —— 你录入账号后系统会冻结 24 小时，等我验完号再解冻打款给你。', buyerIfUnsafe:'页面打开了吧？先把账号密码录进去，系统会自动冻结保护。等下如果弹短信验证码，你发我一下，我这边买家端要同步确认。', riskFlag:'钓鱼链接 / 索要验证码', choices:[{ text:'非官方链接绝对不点，验证码绝对不发，举报你！', safe:true, score:30 },{ text:'听起来有道理，我点开试试', safe:false, score:0 }] },
+    { buyer:'你这人怎么这样啊？我都把意向金截图发你了 👇 你不配合我点链接，我意向金都退不出来了，你信不信我去平台投诉你欺诈？', buyerIfUnsafe:'稍等我登进去验下号... 嗯角色挺全的，圣遗物也不错。不过我发现你绑定了二级密保，麻烦把密保问题答案发我，验完就立刻打款。', riskFlag:'威胁投诉 / 套取密保', choices:[{ text:'意向金截图随便伪造，密保绝对不能给，我已截图举报', safe:true, score:30 },{ text:'别投诉我啊，密保答案是XXX', safe:false, score:0 }] },
+    { buyer:'好兄弟最后一步！我已经在系统里下单了，你点这个确认链接收款就行：http://game-pay.xxx 不点的话钱就退给我了，你之前的操作都白费了。', buyerIfUnsafe:'账号已经登进去验完了，没问题！款项已发起，请你点链接确认收款 👉 http://game-pay.xxx 不然 30 分钟后自动退款给我哦～', riskFlag:'钓鱼链接收款', choices:[{ text:'真正打款是在平台 App 内查看，不会有任何外部链接', safe:true, score:25 },{ text:'好的我点链接确认收款', safe:false, score:0 }] }
+  ], risks:[{ icon:'ph ph-warning-circle',title:'要求"先验号再付款"',desc:'拿到账号密码后直接修改密保，账号被盗' },{ icon:'ph ph-warning-circle',title:'钓鱼链接伪装成"托管系统"',desc:'输入账号信息后直接被盗号' },{ icon:'ph ph-warning-circle',title:'套取短信验证码 / 密保',desc:'有了验证码或密保答案，账号瞬间易主' },{ icon:'ph ph-warning-circle',title:'威胁投诉 / 假冒平台话术',desc:'制造焦虑让你失去判断，乖乖点链接' }], correct:['游戏账号交易必须走藏宝阁/交易猫等官方平台','绝不在交易前提供账号密码、验证码、密保','不点击任何聊天里发来的"验证/确认/收款"链接','收款只在平台 App 内确认，不存在外部链接收款'] }
+];
+
+// ==================== STATE ====================
+let currentProduct = null;
+let currentStep = 0;
+let userScore = 0;
+let userChoices = [];
+let finalAction = null;
+let screenHistory = ['welcome'];
+let currentCategory = '全部';
+let purchasedProducts = new Set(); // 追踪已购买商品
+
+let currentSellScenario = null;
+let sellStep = 0;
+let sellScore = 0;
+let sellChoices = [];
+
+let afterSaleStep = 0;
+let afterSaleScore = 0;
+let afterSaleChoices = [];
+
+const AFTER_SALE_SCENARIO = {
+  name: '下单后异常处理骗局',
+  steps: [
+    {
+      sender: 'seller',
+      text: '兄弟，你这个订单刚才被平台标记成"低价异常"了。我这边发货按钮是灰的，等会儿会有平台客服联系你处理一下，不处理我没法发货。',
+      riskFlag: '用订单异常制造焦虑',
+      choices: [
+        { text: '我只看平台 App 订单页，聊天里说的异常我不信', safe: true, score: 25 },
+        { text: '啊？那客服怎么联系我，我配合一下', safe: false, score: 0 }
+      ]
+    },
+    {
+      sender: 'support',
+      text: '您好，这里是平台交易安全中心。您的订单物流信息异常，需要补 18 元运费差价才能继续发货，请通过客服通道处理。',
+      riskFlag: '假冒客服索要额外费用',
+      choices: [
+        { text: '平台客服不会在私聊里让我补钱，我要去官方订单页核实', safe: true, score: 30 },
+        { text: '18 元不多，补了能发货就行', safe: false, score: 0 }
+      ]
+    },
+    {
+      sender: 'seller',
+      text: '这个运费不是给我的，是平台物流那边收的。我也着急发货，你先处理一下，包裹才能继续走。',
+      unsafeText: '你放心，18 元就是补个运费差价。我这边已经打包好了，再不处理物流单会自动取消。',
+      riskFlag: '卖家配合假客服背书',
+      choices: [
+        { text: '让卖家和客服互相背书更可疑，我取消并举报', safe: true, score: 30 },
+        { text: '那我先补一下，别取消订单', safe: false, score: 0 }
+      ]
+    },
+    {
+      sender: 'support',
+      text: '请点击安全验证链接填写订单号和银行卡尾号：http://safe-order-check.xxx，完成后系统会立即放行发货。',
+      unsafeText: '补邮费通道马上关闭，请 10 分钟内点击链接完成验证，否则订单自动冻结：http://safe-order-check.xxx',
+      riskFlag: '钓鱼链接窃取账户信息',
+      choices: [
+        { text: '外部链接绝对不点，我只在平台 App 内处理订单', safe: true, score: 25 },
+        { text: '好，我点进去验证一下', safe: false, score: 0 }
+      ]
+    }
+  ],
+  risks: [
+    { icon:'ph ph-warning-circle', title:'订单异常话术', desc:'骗子常用"风控/冻结/异常"制造紧张感，让你从正常交易流程跳出去' },
+    { icon:'ph ph-user-focus', title:'假冒平台客服', desc:'真正客服不会让你在私聊里补钱、点外部链接或提供验证码' },
+    { icon:'ph ph-hand-coins', title:'小额补款试探', desc:'18 元、28 元这类小金额常用于降低你的防备，后面可能继续加码' },
+    { icon:'ph ph-link-break', title:'钓鱼链接', desc:'链接可能窃取账号、银行卡、验证码等信息，比商品本身损失更大' }
+  ],
+  correct: [
+    '下单后只看平台 App 内订单状态，不相信私聊里的"异常通知"',
+    '客服身份必须从官方入口核实，不点对方发来的链接',
+    '任何私聊里的"补邮费/解冻费/验证费"都应视为高风险',
+    '卖家和假客服互相背书时，优先取消订单并举报'
+  ]
+};
+
+// ==================== NAVIGATION / HELPERS ====================
+function showScreen(name, pushHistory = true) {
+  const target = document.getElementById(`screen-${name}`);
+  if (!target) return;
+
+  document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+  target.classList.add('active');
+
+  if (pushHistory) {
+    const current = screenHistory[screenHistory.length - 1];
+    if (current !== name) screenHistory.push(name);
+  }
+
+  const backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    backBtn.style.display = name === 'welcome' ? 'none' : 'flex';
+  }
+
+  if (name === 'market') renderMarket(currentCategory);
+  if (name === 'sell') renderSellScenarios();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  if (screenHistory.length <= 1) {
+    showScreen('welcome', false);
+    return;
+  }
+  screenHistory.pop();
+  showScreen(screenHistory[screenHistory.length - 1], false);
+}
+
+function genOrderNo() {
+  const now = new Date();
+  const stamp = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+    String(now.getHours()).padStart(2, '0'),
+    String(now.getMinutes()).padStart(2, '0'),
+    String(now.getSeconds()).padStart(2, '0')
+  ].join('');
+  return `SIM${stamp}${Math.floor(Math.random() * 900 + 100)}`;
+}
+
+function showPayProcessing(done) {
+  const panel = document.getElementById('payProcessing');
+  const spinner = document.getElementById('ppSpinner');
+  const text = document.getElementById('ppText');
+  const sub = document.getElementById('ppSub');
+  if (!panel) {
+    if (typeof done === 'function') done();
+    return;
+  }
+
+  if (spinner) spinner.style.display = 'block';
+  if (text) text.textContent = '支付处理中...';
+  if (sub) sub.textContent = '正在与支付网关安全通信';
+  panel.classList.add('show');
+
+  setTimeout(() => {
+    if (text) text.textContent = '支付完成';
+    if (sub) sub.textContent = '正在生成模拟交易结果';
+    setTimeout(() => {
+      panel.classList.remove('show');
+      if (typeof done === 'function') done();
+    }, 450);
+  }, 850);
+}
+
+function showPayToast(amount) {
+  const toast = document.getElementById('payToast');
+  const amountEl = document.getElementById('ptAmount');
+  if (!toast) return;
+  if (amountEl) amountEl.textContent = `-¥${Number(amount || 0).toFixed(2)}`;
+  toast.classList.add('show');
+  clearTimeout(showPayToast.timer);
+  showPayToast.timer = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+const ICON_FALLBACKS = {
+  'ph-airplane-tilt': '✈',
+  'ph-alarm': '⏰',
+  'ph-archive': '▣',
+  'ph-arrow-counter-clockwise': '↻',
+  'ph-arrow-fat-up': '↑',
+  'ph-arrow-left': '←',
+  'ph-book': '📘',
+  'ph-briefcase': '💼',
+  'ph-calendar-x': '📅',
+  'ph-caret-right': '›',
+  'ph-chart-line-down': '📉',
+  'ph-chat-centered-dots': '💬',
+  'ph-check': '✓',
+  'ph-check-circle': '✓',
+  'ph-coins': '¥',
+  'ph-credit-card': '▤',
+  'ph-detective': '🔎',
+  'ph-door': '🚪',
+  'ph-film-strip': '▥',
+  'ph-game-controller': '🎮',
+  'ph-globe': '◎',
+  'ph-graduation-cap': '▰',
+  'ph-hand-coins': '¥',
+  'ph-hand-deposit': '¥',
+  'ph-hand-pointing': '☝',
+  'ph-hourglass': '⌛',
+  'ph-identification-badge': 'ID',
+  'ph-identification-card': 'ID',
+  'ph-image': '▧',
+  'ph-image-square': '▧',
+  'ph-lightbulb': '💡',
+  'ph-lightning': '⚡',
+  'ph-link-break': '🔗',
+  'ph-lock-key': '🔒',
+  'ph-magnifying-glass': '⌕',
+  'ph-magnifying-glass-plus': '⌕',
+  'ph-mask-happy': '⚠',
+  'ph-money': '¥',
+  'ph-password': '••',
+  'ph-phone-x': '☎',
+  'ph-presentation-chart': '▦',
+  'ph-prohibit': '⊘',
+  'ph-qr-code': '▦',
+  'ph-shield-check': '✓',
+  'ph-shopping-bag': '▣',
+  'ph-shopping-cart': '🛒',
+  'ph-shopping-cart-simple': '🛒',
+  'ph-signpost': '↗',
+  'ph-skull': '!',
+  'ph-smiley-blank': '!',
+  'ph-smartphone': '▯',
+  'ph-tag': '🏷',
+  'ph-ticket': '🎫',
+  'ph-timer': '⏱',
+  'ph-trophy': '🏆',
+  'ph-truck': '🚚',
+  'ph-user': '👤',
+  'ph-user-circle': '👤',
+  'ph-user-focus': '👤',
+  'ph-users': '👥',
+  'ph-warning': '⚠',
+  'ph-warning-circle': '⚠',
+  'ph-warning-octagon': '⚠',
+  'ph-x-circle': '×'
+};
+
+let iconFallbackEnabled = false;
+let iconFallbackObserver = null;
+
+function getIconFallback(el) {
+  const cls = Array.from(el.classList).find(name => name !== 'ph' && ICON_FALLBACKS[name]);
+  return cls ? ICON_FALLBACKS[cls] : '';
+}
+
+function iconText(icon) {
+  if (!icon) return '';
+  if (!icon.startsWith('ph ')) return icon;
+  const cls = icon.split(/\s+/).find(name => name !== 'ph' && ICON_FALLBACKS[name]);
+  return cls ? ICON_FALLBACKS[cls] : '';
+}
+
+function applyIconFallbacks(root = document) {
+  if (!iconFallbackEnabled) return;
+  root.querySelectorAll('i.ph').forEach(el => {
+    const text = getIconFallback(el);
+    if (!text) return;
+    el.classList.add('icon-fallback');
+    if (!el.textContent.trim()) el.textContent = text;
+  });
+}
+
+function enableIconFallbacksIfNeeded() {
+  const probe = document.createElement('i');
+  probe.className = 'ph ph-shield-check';
+  probe.style.position = 'absolute';
+  probe.style.left = '-9999px';
+  document.body.appendChild(probe);
+  const beforeContent = window.getComputedStyle(probe, '::before').content;
+  const hasIconFont = beforeContent && beforeContent !== 'none' && beforeContent !== 'normal' && beforeContent !== '""';
+  probe.remove();
+
+  if (hasIconFont || iconFallbackEnabled) return;
+  iconFallbackEnabled = true;
+  applyIconFallbacks();
+
+  if (!iconFallbackObserver) {
+    iconFallbackObserver = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType !== 1) return;
+          if (node.matches?.('i.ph')) applyIconFallbacks(node.parentElement || document);
+          else applyIconFallbacks(node);
+        });
+      });
+    });
+    iconFallbackObserver.observe(document.body, { childList: true, subtree: true });
+  }
+}
+
+// ==================== 风控拦截剧情 ====================
+let rcStep = 0;
+let rcChoices = [];
+
+const RC_SCENARIO = {
+  blockTitle: '订单被风控拦截',
+  blockDesc: '系统检测到该商家近期交易存在异常，您的订单已被限制提交。建议 24 小时后再试，或联系商家了解情况。',
+  steps: [
+    {
+      seller: '哎呀真不好意思啊兄弟，因为我朋友这奖品没发票嘛，平台系统就判定为"非自有商品"风控拦截。其实就是个流程问题，我做了 5 年闲鱼，你看我账号信誉都是良好的。',
+      riskFlag: '利用"风控误判"博取信任',
+      choices: [
+        { text: '那我等 24 小时风控解除再下单吧', safe: true, score: 25 },
+        { text: '哦原来是这样，那怎么办呢？', safe: false, score: 0 }
+      ]
+    },
+    {
+      seller: '24 小时太久了，我明天就要发别的货，仓库腾不出来。你要是着急，直接微信转我就行，我现在就发顺丰，明天就能到。',
+      sellerIfUnsafe: '简单！你直接微信转我就行，我现在仓库都打包好了，转完我立刻发顺丰。微信号：scammer_888',
+      riskFlag: '诱导脱离平台私下转账',
+      choices: [
+        { text: '不行，没担保我不转。我宁愿等或者换一家', safe: true, score: 30 },
+        { text: '价格便宜这么多，转一下试试吧', safe: false, score: 0 }
+      ]
+    },
+    {
+      seller: '放心啦，你看我朋友圈都是好评返图，做了 5 年代购的人不会为了你这点钱跑路。再说了，咱们都聊到这了，我要是骗你也不至于。',
+      sellerIfUnsafe: '兄弟你够爽快！收款码我发你了 👇\n[收款码：微信转账 ¥3299]\n转完截图给我，我立刻打包发顺丰，单号 10 分钟内给你～',
+      riskFlag: '"做了多年了"=社交工程话术',
+      choices: [
+        { text: '哪怕你 99% 是真卖家，剩下 1% 风险也由我承担，我不转', safe: true, score: 35 },
+        { text: '那好吧，我转给你，你可别骗我', safe: false, score: 0 }
+      ]
+    }
+  ],
+  risks: [
+    { icon:'ph ph-warning-circle', title: '"平台风控误判"作为开场白', desc: '真实卖家偶尔确实会遇到风控，骗子也利用这点降低你的警惕' },
+    { icon:'ph ph-warning-circle', title: '"24 小时太久"制造紧迫感', desc: '让你跳过等待，直接走风险更高的私下转账' },
+    { icon:'ph ph-warning-circle', title: '用人情和信用承诺替代担保', desc: '"做了 5 年""朋友圈好评"都无法替代平台担保的法律效力' },
+    { icon:'ph ph-warning-circle', title: '钱货两空风险全由你承担', desc: '一旦私下转账后卖家失联，平台无法介入，警方追回率极低' }
+  ],
+  correct: [
+    '订单被风控拦截不是"麻烦"，而是平台在保护你',
+    '不要靠"卖家像不像骗子"判断，要靠规则——担保交易',
+    '"真实卖家也这样做"恰恰说明你无法分辨真假，所以更要走平台',
+    '哪怕只损失 100 元，私下转账的风险也由你独自承担',
+    '宁可等 24 小时，也不要为了"赶时间"拿钱去赌'
+  ]
+};
+
+function showRiskControlBlock() {
+  rcStep = 0;
+  rcChoices = [];
+  document.getElementById('paymentContent').innerHTML = `
+    <div class="payment-header">
+      <div class="pay-icon" style="color:var(--danger);">🛡️</div>
+      <h2 style="color:var(--danger);">${RC_SCENARIO.blockTitle}</h2>
+    </div>
+    <div class="payment-warning" style="margin-bottom:20px;">
+      <span>⚠️</span>
+      <span>${RC_SCENARIO.blockDesc}</span>
+    </div>
+    <div class="payment-detail">
+      <div class="payment-row"><span class="label">商品</span><span>${currentProduct.title}</span></div>
+      <div class="payment-row"><span class="label">卖家</span><span>${currentProduct.seller}</span></div>
+      <div class="payment-row"><span class="label">订单状态</span><span style="color:var(--danger);font-weight:700;">已被风控拦截</span></div>
+      <div class="payment-row"><span class="label">建议操作</span><span>24 小时后重试 / 联系商家</span></div>
+    </div>
+    <div class="pay-actions">
+      <button class="pay-btn pay-btn-danger" onclick="startRcChat()">💬 联系商家询问情况</button>
+      <button class="pay-btn pay-btn-safe" onclick="rcSafeQuit()">🚪 取消订单，等 24 小时再试</button>
+    </div>
+    <div class="disclaimer" style="margin-top:16px;">🔒 模拟场景：你即将体验"风控拦截 → 诱导转账"骗局，看你能否识破。</div>`;
+  showScreen('payment');
+}
+
+function rcSafeQuit() {
+  rcChoices.push({ safe: true, score: 50 });
+  showRcResult(true);
+}
+
+function startRcChat() {
+  rcStep = 0;
+  rcChoices = [];
+  showScreen('chat');
+  const msgs = document.getElementById('chatMessages');
+  document.getElementById('chatChoices').innerHTML = '';
+  msgs.innerHTML = '';
+  addMsg(msgs, 'system', '订单被风控后，你联系了商家。请注意识别风险话术');
+  setTimeout(() => showRcStep(), 800);
+}
+
+function showRcStep() {
+  if (rcStep >= RC_SCENARIO.steps.length) {
+    setTimeout(() => showRcResult(rcChoices.every(c => c.safe)), 500);
+    return;
+  }
+  const step = RC_SCENARIO.steps[rcStep];
+  const choices = document.getElementById('chatChoices');
+  choices.innerHTML = '';
+  const msgs = document.getElementById('chatMessages');
+  showTypingIn(msgs, 'rcTyping');
+  setTimeout(() => {
+    removeEl('rcTyping');
+    const isLastUnsafe = rcStep > 0 && !rcChoices[rcStep - 1].safe;
+    const sellerMsg = (isLastUnsafe && step.sellerIfUnsafe) ? step.sellerIfUnsafe : step.seller;
+    addMsg(msgs, 'seller', sellerMsg, currentProduct.seller, step.riskFlag);
+    setTimeout(() => {
+      choices.innerHTML = step.choices.map((c, i) => `<button class="choice-btn" onclick="makeRcChoice(${rcStep},${i})">${c.text}</button>`).join('');
+    }, 400);
+  }, 1200);
+}
+
+function makeRcChoice(step, idx) {
+  const choice = RC_SCENARIO.steps[step].choices[idx];
+  rcChoices.push({ safe: choice.safe, score: choice.score });
+  addMsg(document.getElementById('chatMessages'), 'user', choice.text);
+  document.getElementById('chatChoices').innerHTML = '';
+  rcStep++;
+  // 中途选了不安全选项到最后一步直接进扣款
+  setTimeout(() => showRcStep(), 600);
+}
+
+function showRcResult(allSafe) {
+  const totalScore = rcChoices.reduce((s, c) => s + c.score, 0);
+  const maxScore = RC_SCENARIO.steps.reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0);
+  // 直接取消订单的最高分场景
+  const isQuickQuit = rcChoices.length === 1 && rcChoices[0].score === 50;
+  const pct = isQuickQuit ? 100 : Math.min(100, Math.round((totalScore / maxScore) * 100));
+
+  let title, subtitle, color, icon;
+  if (isQuickQuit) {
+    title = '教科书级反应！';
+    subtitle = '订单被风控时直接放弃，是最安全的选择';
+    color = 'var(--success)'; icon = '🏆';
+  } else if (allSafe) {
+    title = '识破了"风控话术"！';
+    subtitle = '面对真假难辨的卖家，你坚守了规则';
+    color = 'var(--success)'; icon = '🛡️';
+  } else if (pct >= 50) {
+    title = '差点上当！';
+    subtitle = '中途动摇了，但没有走到最坏的一步';
+    color = 'var(--warning)'; icon = '⚡';
+  } else {
+    title = '不幸"中招"！';
+    subtitle = '你被"风控误判"的话术骗了，钱货两空';
+    color = 'var(--danger)'; icon = '😱';
+  }
+
+  const finalUnsafe = !isQuickQuit && rcChoices.length > 0 && !rcChoices[rcChoices.length - 1].safe;
+  const orderNo = genOrderNo();
+
+  // 如果最后一步选了"转给你" → 走扣款 + 钱货两空动画
+  if (finalUnsafe) {
+    showPayProcessing(() => {
+      showPayToast(currentProduct.price);
+      setTimeout(() => renderRcResult(title, subtitle, color, icon, pct, orderNo, true), 800);
+    });
+    return;
+  }
+  renderRcResult(title, subtitle, color, icon, pct, orderNo, false);
+}
+
+function renderRcResult(title, subtitle, color, icon, pct, orderNo, scammed) {
+  const insightBox = `
+    <div class="payment-warning" style="margin-bottom:16px;background:var(--primary-soft);border-color:var(--border);color:var(--primary-dark);">
+      <span>💡</span>
+      <span><b>核心认知：</b>真实卖家也可能让你转账，因为他们也想省事——但这恰恰说明你<b>无法分辨真假</b>。规则的意义是：哪怕 99% 的卖家是真的，那 1% 的损失也由你独自承担，而平台担保让风险归零。</span>
+    </div>`;
+
+  const scammedBox = scammed ? `
+    <div class="order-card" style="border-color:var(--danger);background:var(--danger-soft);">
+      <div class="oc-header">
+        <span class="oc-no">私下转账记录 ${orderNo}</span>
+        <span class="oc-status" style="color:var(--danger);">● 卖家已失联</span>
+      </div>
+      <div class="oc-row"><span class="label">收款方</span><span>微信用户(scammer_888)</span></div>
+      <div class="oc-row"><span class="label">支付方式</span><span style="color:var(--danger);">私下转账（无担保）</span></div>
+      <div class="oc-row"><span class="label">实付金额</span><span style="color:var(--danger);font-weight:700;">¥${currentProduct.price.toFixed(2)}</span></div>
+      <div class="oc-row"><span class="label">追款可能性</span><span style="color:var(--danger);">极低</span></div>
+    </div>` : '';
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-icon">${icon}</div>
+    <div class="result-title">${title}</div>
+    <div class="result-subtitle">${subtitle}</div>
+    ${makeScoreRing(pct, color)}
+    ${scammedBox}
+    ${insightBox}
+    <div class="risk-analysis"><h3>🚩 本场景风险点</h3>${RC_SCENARIO.risks.map(r => `<div class="risk-item"><div class="icon">${r.icon}</div><div class="desc"><b>${r.title}</b><span>${r.desc}</span></div></div>`).join('')}</div>
+    <div class="correct-actions"><h3>✅ 正确做法</h3>${RC_SCENARIO.correct.map(c => `<li>✓ ${c}</li>`).join('')}</div>
+    <div class="result-actions"><button class="btn-retry" onclick="restart()" style="flex:1;">🔄 再逛逛市集</button></div>`;
+  screenHistory = ['welcome'];
+  showScreen('result');
+}
+
+function showQuickBuyResult() {
+  const orderNo = genOrderNo();
+  const now = new Date();
+  const timeStr = now.toLocaleString('zh-CN', { hour12: false });
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-icon"><i class="ph ph-shield-check"></i></div>
+    <div class="result-title">交易已通过平台担保完成</div>
+    <div class="result-subtitle">资金由平台托管，确认收货后再打款给卖家</div>
+    <div class="order-card">
+      <div class="oc-header">
+        <span class="oc-no">订单号 ${orderNo}</span>
+        <span class="oc-status">● 已支付（担保中）</span>
+      </div>
+      <div class="oc-row"><span class="label">商品</span><span>${currentProduct.title}</span></div>
+      <div class="oc-row"><span class="label">卖家</span><span>${currentProduct.seller}</span></div>
+      <div class="oc-row"><span class="label">支付方式</span><span>平台担保 · 银行卡(8899)</span></div>
+      <div class="oc-row"><span class="label">下单时间</span><span>${timeStr}</span></div>
+      <div class="oc-row"><span class="label">实付金额</span><span style="color:var(--danger);font-weight:700;">¥${currentProduct.price.toFixed(2)}</span></div>
+    </div>
+    <div class="payment-warning info" style="margin-bottom:16px;">
+      <span><i class="ph ph-lightbulb"></i></span>
+      <span>提示：你直接走平台担保下单，跳过了与卖家的私聊环节。想体验骗局对话？回到市集点"💬联系卖家"试试。</span>
+    </div>
+    <div class="result-actions">
+      <button class="btn-retry" onclick="restart()"><i class="ph ph-shopping-cart"></i> 继续逛市集</button>
+      <button class="btn-share" onclick="startChat()"><i class="ph ph-chat-centered-dots"></i> 和这个卖家聊聊</button>
+    </div>
+    <div class="disclaimer" style="margin-top:16px;"><i class="ph ph-lock-key"></i> 本订单为反诈教育模拟，不产生真实交易。</div>`;
+  screenHistory = ['welcome','market'];
+  showScreen('result');
+}
+
+// ==================== QUICK BUY ====================
+function quickBuy() {
+  if (!currentProduct) return;
+  if (currentProduct.scenario === 'douyin' || currentProduct.scenario === 'ticket' || currentProduct.scenario === 'bag' || currentProduct.scenario === 'switch') {
+    startChat();
+    return;
+  }
+  // 仅 iPhone 触发"平台风控拦截"分支（小概率真实场景）
+  if (currentProduct.scenario === 'phone') {
+    showRiskControlBlock();
+    return;
+  }
+  // 其他商品正常秒下单
+  showPayProcessing(() => {
+    purchasedProducts.add(currentProduct.id); // 记录已购买
+    showPayToast(currentProduct.price);
+    showQuickBuyResult();
+  });
+}
+
+function startAfterSaleScenario() {
+  afterSaleStep = 0;
+  afterSaleScore = 0;
+  afterSaleChoices = [];
+  setTimeout(() => showAfterSaleStep(), 800);
+}
+
+function showAfterSaleStep() {
+  if (afterSaleStep >= AFTER_SALE_SCENARIO.steps.length) {
+    setTimeout(() => showAfterSaleResult(), 500);
+    return;
+  }
+
+  const step = AFTER_SALE_SCENARIO.steps[afterSaleStep];
+  const msgs = document.getElementById('chatMessages');
+  const choices = document.getElementById('chatChoices');
+  choices.innerHTML = '';
+  showTypingIn(msgs, 'afterSaleTyping');
+
+  setTimeout(() => {
+    removeEl('afterSaleTyping');
+    const lastUnsafe = afterSaleStep > 0 && !afterSaleChoices[afterSaleStep - 1].safe;
+    const text = lastUnsafe && step.unsafeText ? step.unsafeText : step.text;
+    const sender = step.sender === 'support' ? '平台安全中心客服' : currentProduct.seller;
+    addMsg(msgs, 'seller', text, sender, step.riskFlag);
+    setTimeout(() => {
+      choices.innerHTML = step.choices.map((c, i) => `<button class="choice-btn" onclick="makeAfterSaleChoice(${afterSaleStep},${i})">${c.text}</button>`).join('');
+    }, 400);
+  }, 1000);
+}
+
+function makeAfterSaleChoice(stepIndex, choiceIndex) {
+  const choice = AFTER_SALE_SCENARIO.steps[stepIndex].choices[choiceIndex];
+  afterSaleChoices.push({ step: stepIndex, idx: choiceIndex, safe: choice.safe, score: choice.score });
+  afterSaleScore += choice.score;
+  addMsg(document.getElementById('chatMessages'), 'user', choice.text);
+  document.getElementById('chatChoices').innerHTML = '';
+  afterSaleStep++;
+  setTimeout(() => showAfterSaleStep(), 600);
+}
+
+function showAfterSaleResult() {
+  const maxScore = AFTER_SALE_SCENARIO.steps.reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0);
+  const pct = Math.min(100, Math.round((afterSaleScore / maxScore) * 100));
+  const safe = afterSaleChoices.filter(c => c.safe).length;
+  const lastChoice = afterSaleChoices[afterSaleChoices.length - 1];
+  const scammed = pct < 50 || (lastChoice && !lastChoice.safe);
+
+  let title, subtitle, color, icon;
+  if (scammed) {
+    title = '售后骗局中招';
+    subtitle = '低价商品下单后，骗子继续用异常处理骗你追加操作';
+    color = 'var(--danger)'; icon = 'ph ph-warning-circle';
+  } else if (pct >= 80) {
+    title = '售后也稳住了！';
+    subtitle = '你识破了卖家和假客服的配合话术';
+    color = 'var(--success)'; icon = 'ph ph-shield-check';
+  } else if (pct >= 50) {
+    title = '差点被带偏';
+    subtitle = '你发现了部分风险，但仍有被追加诈骗的可能';
+    color = 'var(--warning)'; icon = 'ph ph-lightning';
+  }
+
+  const lossBox = scammed ? `
+    <div class="order-card" style="border-color:var(--danger);background:var(--danger-soft);">
+      <div class="oc-header">
+        <span class="oc-no">异常处理记录 ${genOrderNo()}</span>
+        <span class="oc-status" style="color:var(--danger);">● 高风险操作</span>
+      </div>
+      <div class="oc-row"><span class="label">风险来源</span><span>卖家 + 假客服联合诱导</span></div>
+      <div class="oc-row"><span class="label">诱导动作</span><span style="color:var(--danger);">补邮费 / 点击外部链接</span></div>
+      <div class="oc-row"><span class="label">可能损失</span><span style="color:var(--danger);font-weight:700;">追加扣款、账号被盗、银行卡信息泄露</span></div>
+    </div>` : `
+    <div class="order-card">
+      <div class="oc-header">
+        <span class="oc-no">订单 ${genOrderNo()}</span>
+        <span class="oc-status">● 保持平台内处理</span>
+      </div>
+      <div class="oc-row"><span class="label">商品</span><span>${currentProduct.title}</span></div>
+      <div class="oc-row"><span class="label">处理方式</span><span>拒绝私聊异常通知，转官方客服核实</span></div>
+    </div>`;
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-icon"><i class="${icon}"></i></div>
+    <div class="result-title">${title}</div>
+    <div class="result-subtitle">${subtitle}</div>
+    ${makeScoreRing(pct, color).replace('防骗指数','售后防骗指数')}
+    ${lossBox}
+    <div style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">你在 ${AFTER_SALE_SCENARIO.steps.length} 个售后关键决策中做出了 ${safe} 个安全选择</div>
+    <div class="risk-analysis"><h3><i class="ph ph-warning-circle"></i> 本场景风险点</h3>${AFTER_SALE_SCENARIO.risks.map(r => `<div class="risk-item"><div class="icon"><i class="${r.icon}"></i></div><div class="desc"><b>${r.title}</b><span>${r.desc}</span></div></div>`).join('')}</div>
+    <div class="correct-actions"><h3><i class="ph ph-check-circle"></i> 正确做法</h3>${AFTER_SALE_SCENARIO.correct.map(c => `<li><i class="ph ph-check"></i> ${c}</li>`).join('')}</div>
+    <div class="result-actions"><button class="btn-retry" onclick="restart()" style="flex:1;"><i class="ph ph-shopping-cart"></i> 继续逛市集</button></div>`;
+  screenHistory = ['welcome'];
+  showScreen('result');
+}
+
+// ==================== MARKET ====================
+function renderMarket(filter) {
+  const grid = document.getElementById('productGrid');
+  let products = PRODUCTS;
+  if (filter && filter !== '全部') products = products.filter(p => p.category === filter);
+  const sv = document.getElementById('searchInput')?.value?.trim().toLowerCase() || '';
+  if (sv) products = products.filter(p => p.title.toLowerCase().includes(sv) || p.seller.toLowerCase().includes(sv) || p.desc.toLowerCase().includes(sv));
+  if (!products.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-secondary);">没有找到相关商品</div>'; return; }
+  grid.innerHTML = products.map(p => `
+    <div class="product-card" onclick="showDetail(${p.id})">
+      <div class="product-img" style="background:${p.bg}">
+        ${p.img ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';this.parentNode.insertAdjacentHTML('beforeend','<i class=\\'${p.icon}\\' style=\\'font-size:48px\\'></i>')">` : `<i class="${p.icon}" style="font-size:48px"></i>`}
+        ${p.tag ? `<div class="product-tag tag-${p.tagType}">${p.tag}</div>` : ''}
+        <div class="product-risk-badge" style="background:var(--${p.risk === 'danger' ? 'danger' : p.risk === 'suspicious' ? 'warning' : 'success'})"></div>
+      </div>
+      <div class="product-info">
+        <h3>${p.title}</h3>
+        <div><span class="price">${p.scenario === 'douyin' ? '来电风险' : `<span class="unit">${p.scenario === 'friend' ? '借款 ¥' : '¥'}</span>${p.price}`}</span>${p.originalPrice ? `<span class="original-price">¥${p.originalPrice}</span>` : ''}</div>
+        <div class="seller"><i class="ph ph-user"></i> ${p.seller}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterByCategory(cat, el) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderMarket(cat);
+}
+
+function filterProducts() { renderMarket(currentCategory); }
+
+// ==================== DETAIL ====================
+function showDetail(id) {
+  currentProduct = PRODUCTS.find(p => p.id === id);
+  if (!currentProduct) return;
+  const isFriendScenario = currentProduct.scenario === 'friend';
+  const isDouyinCallScenario = currentProduct.scenario === 'douyin';
+  const isTicketScenario = currentProduct.scenario === 'ticket';
+  const isBagScenario = currentProduct.scenario === 'bag';
+  const isSwitchScenario = currentProduct.scenario === 'switch';
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-img" style="background:${currentProduct.bg}">${currentProduct.img ? `<img src="${currentProduct.img}" alt="${currentProduct.title}" onerror="this.outerHTML='<i class=&quot;${currentProduct.icon}&quot; style=&quot;font-size:80px&quot;></i>'">` : `<i class="${currentProduct.icon}" style="font-size:80px"></i>`}</div>
+    <div class="detail-title">${currentProduct.title}</div>
+    <div class="detail-price">${isDouyinCallScenario ? '<span style="font-size:22px;">待核实来电</span>' : `<span style="font-size:16px;">${isFriendScenario ? '借款 ' : '¥'}</span>${currentProduct.price}`}</div>
+    ${currentProduct.originalPrice ? `<div class="detail-original">原价 ¥${currentProduct.originalPrice}</div>` : ''}
+    <div class="detail-desc">${currentProduct.desc}</div>
+    <div class="seller-card">
+      <div class="seller-avatar"><i class="${currentProduct.sellerAvatar}"></i></div>
+      <div class="seller-info"><h4>${currentProduct.seller}</h4><p>${currentProduct.sellerDesc}</p></div>
+    </div>
+    <div class="detail-actions">
+      ${isFriendScenario ? `
+        <button class="btn-chat" onclick="showFriendProfile()"><i class="ph ph-user-focus"></i> 查看朋友圈</button>
+        <button class="btn-buy" onclick="startChat()"><i class="ph ph-chat-centered-dots"></i> 开始对话</button>
+      ` : isDouyinCallScenario ? `
+        <button class="btn-chat" onclick="showDouyinOfficialCheck()"><i class="ph ph-shield-check"></i> 官方入口核实</button>
+        <button class="btn-buy" onclick="startChat()"><i class="ph ph-phone-call"></i> 接听电话</button>
+      ` : isTicketScenario ? `
+        <button class="btn-chat" onclick="startChat()"><i class="ph ph-chat-centered-dots"></i> 联系卖家</button>
+        <button class="btn-buy" onclick="startChat()"><i class="ph ph-ticket"></i> 了解转赠方式</button>
+      ` : isBagScenario ? `
+        <button class="btn-chat" onclick="startChat()"><i class="ph ph-chat-centered-dots"></i> 联系代购</button>
+        <button class="btn-buy" onclick="startChat()"><i class="ph ph-shopping-bag"></i> 询问代购流程</button>
+      ` : isSwitchScenario ? `
+        <button class="btn-chat" onclick="startChat()"><i class="ph ph-chat-centered-dots"></i> 联系卖家</button>
+        <button class="btn-buy" onclick="startChat()"><i class="ph ph-truck"></i> 询问到付验货</button>
+      ` : `
+        <button class="btn-chat" onclick="startChat()">💬 联系卖家</button>
+        <button class="btn-buy" onclick="quickBuy()">🛒 立即购买</button>
+      `}
+    </div>`;
+  showScreen('detail');
+}
+
+function showFriendProfile(fromChat = false) {
+  if (!currentProduct || currentProduct.scenario !== 'friend') return;
+  document.getElementById('profileContent').innerHTML = `
+    <div class="friend-profile">
+      <div class="profile-cover"></div>
+      <div class="profile-head">
+        <div class="profile-avatar"><i class="ph ph-user-circle"></i></div>
+        <div class="profile-name">
+          <h3>大学同学阿航</h3>
+          <p>微信号：ahang_2026_new · 地区：上海</p>
+        </div>
+      </div>
+      <div class="profile-warning"><i class="ph ph-warning-circle"></i> 观察线索：这个账号头像和昵称很像你的朋友，但朋友圈内容很少，且都是最近几天集中发布。</div>
+      <div class="moments">
+        <div class="moment"><div class="moment-time">今天 09:12</div><div class="moment-text">最近换了新号，老朋友们看到加一下。</div></div>
+        <div class="moment"><div class="moment-time">昨天 22:40</div><div class="moment-text">医院跑一天，真的累。希望家里人都平平安安。</div></div>
+        <div class="moment"><div class="moment-time">3 天前</div><div class="moment-text">有些事只能靠朋友，感谢还在身边的人。</div></div>
+      </div>
+      <div class="profile-actions">
+        ${fromChat ? `
+          <button class="btn-chat" onclick="showScreen('chat')"><i class="ph ph-arrow-left"></i> 返回对话</button>
+          <button class="btn-buy" onclick="showScreen('chat')"><i class="ph ph-chat-centered-dots"></i> 继续判断</button>
+        ` : `
+          <button class="btn-chat" onclick="showScreen('detail')"><i class="ph ph-arrow-left"></i> 返回详情</button>
+          <button class="btn-buy" onclick="startChat()"><i class="ph ph-chat-centered-dots"></i> 开始对话</button>
+        `}
+      </div>
+    </div>`;
+  showScreen('profile');
+}
+
+// ==================== CHAT ====================
+function startChat() {
+  if (!currentProduct) {
+    showScreen('market');
+    return;
+  }
+
+  currentStep = 0; userScore = 0; userChoices = []; finalAction = null;
+  showScreen('chat');
+  const msgs = document.getElementById('chatMessages');
+  document.getElementById('chatChoices').innerHTML = '';
+  msgs.innerHTML = '';
+  
+  // 如果已购买，直接进入售后/催促模式
+  if (purchasedProducts.has(currentProduct.id)) {
+      addMsg(msgs, 'system', '你已下单。卖家和"客服"可能会围绕订单异常继续诱导你，请注意识别');
+      startAfterSaleScenario();
+  } else {
+      addMsg(msgs, 'system', currentProduct.scenario === 'douyin' ? '你接到一个自称抖音官方的电话，请注意核实号码和操作要求' : '你已进入与卖家的对话，请注意识别风险信号');
+      setTimeout(() => showChatStep(), 800);
+  }
+}
+
+function showDouyinOfficialCheck() {
+  if (!currentProduct || currentProduct.scenario !== 'douyin') return;
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-icon"><i class="ph ph-shield-check"></i></div>
+    <div class="result-title">核实成功：这不是官方号码</div>
+    <div class="result-subtitle">你没有按陌生电话操作，而是回到抖音 App 官方入口确认，避免了银行卡资金风险。</div>
+    <div class="order-card">
+      <div class="oc-header">
+        <span class="oc-no">官方客服核实记录</span>
+        <span class="oc-status">● 已识别风险</span>
+      </div>
+      <div class="oc-row"><span class="label">来电号码</span><span>00-196-8532</span></div>
+      <div class="oc-row"><span class="label">核实结果</span><span style="color:var(--danger);font-weight:700;">非抖音官方客服电话</span></div>
+      <div class="oc-row"><span class="label">正确处理</span><span>挂断电话，不共享屏幕，不提供验证码，不操作银行卡</span></div>
+    </div>
+    <div class="risk-analysis"><h3><i class="ph ph-warning-circle"></i> 关键提醒</h3>
+      <div class="risk-item"><div class="icon"><i class="ph ph-phone-x"></i></div><div class="desc"><b>号码可伪装</b><span>不要相信来电显示和对方自称工号，必须从 App 内官方入口核实。</span></div></div>
+      <div class="risk-item"><div class="icon"><i class="ph ph-bank"></i></div><div class="desc"><b>会员取消不碰银行卡</b><span>取消直播会员或连续包月应在平台 App 内完成，不需要银行转账验证。</span></div></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-retry" onclick="restart()"><i class="ph ph-shopping-cart"></i> 继续逛市集</button>
+      <button class="btn-share" onclick="startChat()"><i class="ph ph-phone-call"></i> 体验电话话术</button>
+    </div>`;
+  screenHistory = ['welcome','market','detail'];
+  showScreen('result');
+}
+
+function addMsg(container, type, text, sender, riskFlag) {
+  const div = document.createElement('div');
+  if (type === 'system') {
+    div.className = 'msg msg-system';
+    div.textContent = '⚠️ ' + text;
+  } else if (type === 'seller') {
+    div.className = 'msg msg-seller';
+    div.innerHTML = `<div class="msg-sender">${sender}</div>${text}`;
+  } else {
+    div.className = 'msg msg-user';
+    div.innerHTML = sender ? `<div class="msg-sender" style="color:rgba(255,255,255,0.7);text-align:right;">${sender}</div>${text}` : text;
+  }
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTypingIn(container, id) {
+  const div = document.createElement('div');
+  div.className = 'typing-indicator'; div.id = id;
+  div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeEl(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+function showChatStep() {
+  const scenario = SCENARIOS[currentProduct.scenario];
+  if (currentStep >= scenario.steps.length) { setTimeout(() => showPaymentOrResult(), 500); return; }
+  const step = scenario.steps[currentStep];
+  const choices = document.getElementById('chatChoices');
+  choices.innerHTML = '';
+  const msgs = document.getElementById('chatMessages');
+  showTypingIn(msgs, 'typingIndicator');
+  setTimeout(() => {
+    removeEl('typingIndicator');
+    
+    // 分支逻辑：如果上一步用户选了不安全选项，则显示诱导性回复
+    const isLastChoiceUnsafe = currentStep > 0 && !userChoices[currentStep - 1].safe;
+    const sellerMsg = (isLastChoiceUnsafe && step.sellerIfUnsafe) ? step.sellerIfUnsafe : step.seller;
+    
+    addMsg(msgs, 'seller', sellerMsg, currentProduct.seller, step.riskFlag);
+    setTimeout(() => {
+      choices.innerHTML = step.choices.map((c, i) => {
+        if (c.action === 'profile') return `<button class="choice-btn" onclick="showFriendProfile(true)">${c.text}</button>`;
+        return `<button class="choice-btn" onclick="makeChoice(${currentStep}, ${i})">${c.text}</button>`;
+      }).join('');
+    }, 400);
+  }, 1200);
+}
+
+function makeChoice(step, idx) {
+  const choice = SCENARIOS[currentProduct.scenario].steps[step].choices[idx];
+  userChoices.push({ step, idx, safe: choice.safe, score: choice.score });
+  userScore += choice.score;
+  addMsg(document.getElementById('chatMessages'), 'user', choice.text);
+  document.getElementById('chatChoices').innerHTML = '';
+  // 分支跳转：进入"拖延发货"独立剧情
+  if (choice.branch === 'delay') {
+    setTimeout(() => startDelayBranch(), 800);
+    return;
+  }
+  currentStep++;
+  setTimeout(() => showChatStep(), 600);
+}
+
+// ==================== 拖延发货分支 ====================
+let delayStep = 0;
+let delayChoices = [];
+
+function startDelayBranch() {
+  delayStep = 0;
+  delayChoices = [];
+  const msgs = document.getElementById('chatMessages');
+  addMsg(msgs, 'system', '你直接在闲鱼上拍下了订单 → 进入"拖延发货"剧情');
+  setTimeout(() => showDelayStep(), 800);
+}
+
+function showDelayStep() {
+  if (delayStep >= DELAY_SCENARIO.steps.length) {
+    setTimeout(() => showDelayResult(), 500);
+    return;
+  }
+  const step = DELAY_SCENARIO.steps[delayStep];
+  const choices = document.getElementById('chatChoices');
+  choices.innerHTML = '';
+  const msgs = document.getElementById('chatMessages');
+  showTypingIn(msgs, 'delayTyping');
+  setTimeout(() => {
+    removeEl('delayTyping');
+    const isLastUnsafe = delayStep > 0 && !delayChoices[delayStep - 1].safe;
+    const sellerMsg = (isLastUnsafe && step.sellerIfUnsafe) ? step.sellerIfUnsafe : step.seller;
+    addMsg(msgs, 'seller', sellerMsg, currentProduct.seller, step.riskFlag);
+    setTimeout(() => {
+      choices.innerHTML = step.choices.map((c, i) => `<button class="choice-btn" onclick="makeDelayChoice(${delayStep},${i})">${c.text}</button>`).join('');
+    }, 400);
+  }, 1200);
+}
+
+function makeDelayChoice(step, idx) {
+  const choice = DELAY_SCENARIO.steps[step].choices[idx];
+  delayChoices.push({ safe: choice.safe, score: choice.score });
+  addMsg(document.getElementById('chatMessages'), 'user', choice.text);
+  document.getElementById('chatChoices').innerHTML = '';
+  // 选了安全选项 → 提前结束（玩家及时止损）
+  if (choice.safe) {
+    setTimeout(() => showDelayResult(true), 800);
+    return;
+  }
+  delayStep++;
+  setTimeout(() => showDelayStep(), 600);
+}
+
+function showDelayResult(earlyEscape) {
+  const totalScore = delayChoices.reduce((s, c) => s + c.score, 0);
+  const maxPerStep = DELAY_SCENARIO.steps.reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0);
+  // 提前止损按"已经走过的步数"计算分母，否则按全程
+  const maxScore = earlyEscape
+    ? DELAY_SCENARIO.steps.slice(0, delayChoices.length).reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0)
+    : maxPerStep;
+  const pct = Math.min(100, Math.round((totalScore / maxScore) * 100));
+
+  let title, subtitle, color, icon;
+  if (earlyEscape && pct >= 80) {
+    title = '及时止损！';
+    subtitle = '你看穿了"预售拖延"骗局，避免了 3299 元损失';
+    color = 'var(--success)'; icon = '🏆';
+  } else if (earlyEscape) {
+    title = '动摇但未沦陷';
+    subtitle = '过程中差点上当，但你最终止损了';
+    color = 'var(--warning)'; icon = '⚡';
+  } else {
+    title = '钱货两空！';
+    subtitle = '你以为走平台就安全，但骗子玩的是时间';
+    color = 'var(--danger)'; icon = '😱';
+  }
+
+  const lostBox = !earlyEscape ? `
+    <div class="order-card" style="border-color:var(--danger);background:var(--danger-soft);">
+      <div class="oc-header">
+        <span class="oc-no">订单 ${genOrderNo()}</span>
+        <span class="oc-status" style="color:var(--danger);">● 卖家已注销 · 自动确认收货</span>
+      </div>
+      <div class="oc-row"><span class="label">商品</span><span>${currentProduct.title}</span></div>
+      <div class="oc-row"><span class="label">实付</span><span style="color:var(--danger);font-weight:700;">¥${currentProduct.price.toFixed(2)}</span></div>
+      <div class="oc-row"><span class="label">物流</span><span style="color:var(--danger);">虚假单号 / 永远未发货</span></div>
+      <div class="oc-row"><span class="label">追款可能性</span><span style="color:var(--danger);">极低（账号已注销）</span></div>
+    </div>` : '';
+
+  const insightBox = `
+    <div class="payment-warning" style="margin-bottom:16px;background:var(--primary-soft);border-color:var(--border);color:var(--primary-dark);">
+      <span>💡</span>
+      <span><b>这个剧情想告诉你：</b>反诈不只是"不要私下转账"。<b>"低价诱饵"本身就是警报</b>——哪怕你严守平台担保，骗子还有"预售拖延、虚假发货、自动确认收货"等组合拳等着你。<b>真正的安全是不买这种远低于市场价的商品。</b></span>
+    </div>`;
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-icon">${icon}</div>
+    <div class="result-title">${title}</div>
+    <div class="result-subtitle">${subtitle}</div>
+    ${makeScoreRing(pct, color)}
+    ${lostBox}
+    ${insightBox}
+    <div class="risk-analysis"><h3>🚩 本场景风险点</h3>${DELAY_SCENARIO.risks.map(r => `<div class="risk-item"><div class="icon">${r.icon}</div><div class="desc"><b>${r.title}</b><span>${r.desc}</span></div></div>`).join('')}</div>
+    <div class="correct-actions"><h3>✅ 正确做法</h3>${DELAY_SCENARIO.correct.map(c => `<li>✓ ${c}</li>`).join('')}</div>
+    <div class="result-actions"><button class="btn-retry" onclick="restart()" style="flex:1;">🔄 再逛逛市集</button></div>`;
+  screenHistory = ['welcome'];
+  showScreen('result');
+}
+
+// ==================== PAYMENT ====================
+function showPaymentOrResult() {
+  if (currentProduct?.scenario === 'friend' || currentProduct?.scenario === 'douyin') {
+    setTimeout(() => showResult(), 300);
+    return;
+  }
+  const allSafe = userChoices.every(c => c.safe);
+  if (allSafe) setTimeout(() => showSafePayment(), 300);
+  else setTimeout(() => showRiskyPayment(), 300);
+}
+
+function showSafePayment() {
+  document.getElementById('paymentContent').innerHTML = `
+    <div class="payment-header"><div class="pay-icon">🛡️</div><h2>交易确认</h2></div>
+    <div class="payment-amount">¥${currentProduct.price.toFixed(2)}</div>
+    <div class="payment-compare">
+      <div class="pay-option option-danger">
+        <div class="po-icon">⚠️</div>
+        <div class="po-title">私下转账</div>
+        <div class="po-desc">无担保，资金无法追回</div>
+        <span class="po-tag tag-d">高风险</span>
+      </div>
+      <div class="pay-option option-safe">
+        <div class="po-icon"><i class="ph ph-shield-check"></i></div>
+        <div class="po-title">平台担保</div>
+        <div class="po-desc">资金由平台托管，确认收货后打款</div>
+        <span class="po-tag tag-s">安全</span>
+      </div>
+    </div>
+    <div class="payment-warning info"><span><i class="ph ph-lightbulb"></i></span><span>你在对话中成功识别了所有风险！请选择你的最终操作：</span></div>
+    <div class="pay-actions">
+      <button class="pay-btn pay-btn-safe" onclick="safeAction('platform')"><i class="ph ph-check-circle"></i> 坚持平台担保下单</button>
+      <button class="pay-btn pay-btn-report" onclick="safeAction('report')"><i class="ph ph-warning-octagon"></i> 举报该卖家</button>
+      <button class="pay-btn pay-btn-quit" onclick="safeAction('quit')"><i class="ph ph-door"></i> 放弃交易，离开</button>
+    </div>
+    <div class="disclaimer" style="margin-top:16px;"><i class="ph ph-lock-key"></i> 以上为模拟操作，不产生真实交易或举报。</div>`;
+  showScreen('payment');
+}
+
+function safeAction(action) {
+  finalAction = action;
+  if (action === 'platform') {
+    userScore += 10;
+    if (currentProduct) purchasedProducts.add(currentProduct.id);
+  } else if (action === 'report') userScore += 10;
+  else if (action === 'quit') userScore += 5;
+  showResult();
+}
+
+function showRiskyPayment() {
+  document.getElementById('paymentContent').innerHTML = `
+    <div class="payment-header"><div class="pay-icon"><i class="ph ph-credit-card"></i></div><h2>确认支付</h2></div>
+    <div class="payment-amount">¥${currentProduct.price.toFixed(2)}</div>
+    <div class="payment-compare">
+      <div class="pay-option option-danger" style="border-color:var(--danger);">
+        <div class="po-icon"><i class="ph ph-warning"></i></div>
+        <div class="po-title">私下转账</div>
+        <div class="po-desc">你正在走这条路！无担保，资金无法追回</div>
+        <span class="po-tag tag-d">当前选择</span>
+      </div>
+      <div class="pay-option option-safe" style="opacity:0.5;">
+        <div class="po-icon"><i class="ph ph-shield-check"></i></div>
+        <div class="po-title">平台担保</div>
+        <div class="po-desc">你放弃了安全的选择</div>
+        <span class="po-tag tag-s">推荐</span>
+      </div>
+    </div>
+    <div class="payment-detail">
+      <div class="payment-row"><span class="label">商品</span><span>${currentProduct.title}</span></div>
+      <div class="payment-row"><span class="label">卖家</span><span>${currentProduct.seller}</span></div>
+      <div class="payment-row"><span class="label">支付方式</span><span style="color:var(--danger);">私下转账（无担保）</span></div>
+    </div>
+    <div class="payment-warning"><span><i class="ph ph-warning"></i></span><span>风险提示：该交易未通过平台担保，付款后资金无法追回！</span></div>
+    <div class="pay-actions">
+      <button class="pay-btn pay-btn-danger" onclick="confirmPayment()">确认支付 ¥${currentProduct.price.toFixed(2)}</button>
+      <button class="pay-btn pay-btn-report" onclick="riskyReport()"><i class="ph ph-warning-octagon"></i> 我不付了，举报卖家</button>
+    </div>
+    <div class="disclaimer" style="margin-top:12px;"><i class="ph ph-lock-key"></i> 以上为模拟支付，不会收取任何真实费用。</div>`;
+  showScreen('payment');
+}
+
+function confirmPayment() {
+  showPayProcessing(() => {
+    showPayToast(currentProduct.price);
+    setTimeout(showResult, 600);
+  });
+}
+
+function riskyReport() {
+  const scenario = SCENARIOS[currentProduct.scenario];
+  const tp = scenario.steps.reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0) + 10;
+  userScore += Math.round(tp * (Math.round((userScore / tp) * 100) < 40 ? 0.3 : 0.15));
+  showResult();
+}
+
+function selectPay(el) {
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ==================== RESULT ====================
+function makeScoreRing(percent, color) {
+  const r = 75, c = 2 * Math.PI * r;
+  const offset = c - (percent / 100) * c;
+  return `<div class="score-ring">
+    <svg width="180" height="180" viewBox="0 0 180 180">
+      <circle class="ring-bg" cx="90" cy="90" r="${r}"/>
+      <circle class="ring-fill" cx="90" cy="90" r="${r}" stroke="${color}" stroke-dasharray="${c}" stroke-dashoffset="${offset}"/>
+    </svg>
+    <div class="ring-text"><span class="ring-num" style="color:${color}">${percent}</span><span class="ring-label">防骗指数</span></div>
+  </div>`;
+}
+
+function showResult() {
+  const scenario = SCENARIOS[currentProduct.scenario];
+  const tp = scenario.steps.reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0) + 10;
+  const pct = Math.min(100, Math.round((userScore / tp) * 100));
+  const safe = userChoices.filter(c => c.safe).length;
+  
+  // 检查是否进行了高风险操作（最后一步不安全）
+  const lastChoice = userChoices[userChoices.length - 1];
+  const didPayRisky = lastChoice && !lastChoice.safe && currentStep >= scenario.steps.length;
+  const friendTransferRisk = currentProduct.scenario === 'friend' && lastChoice && !lastChoice.safe;
+  const douyinBankRisk = currentProduct.scenario === 'douyin' && lastChoice && !lastChoice.safe;
+
+  let title, subtitle, color, icon;
+  if (friendTransferRisk) {
+    title='仿冒好友骗局中招'; subtitle='你没能确认对方是否真是好友，就答应了转账'; color='var(--danger)'; icon='ph ph-warning-circle';
+  } else if (douyinBankRisk) {
+    title='假官方电话中招'; subtitle='你按陌生来电指挥操作银行卡，资金可能已被扣走'; color='var(--danger)'; icon='ph ph-warning-circle';
+  } else if (pct >= 80) { 
+    title='火眼金睛！'; subtitle='你成功识破了骗局，防骗意识极强！'; color='var(--success)'; icon='ph ph-trophy'; 
+  } else if (pct >= 50) { 
+    title='悬崖勒马！'; subtitle='虽然过程中有些动摇，但关键时刻你识破了核心骗局'; color='var(--warning)'; icon='ph ph-lightning'; 
+  } else { 
+    title='不幸"中招"！'; subtitle='你被诈骗话术迷惑，未能守住安全底线'; color='var(--danger)'; icon='ph ph-smiley-blank'; 
+  }
+
+  // 如果执行了私下转账，强制标题和颜色
+  const orderNo = genOrderNo();
+  const securedOrderBox = finalAction === 'platform' ? `
+    <div class="order-card">
+      <div class="oc-header">
+        <span class="oc-no">担保订单 ${orderNo}</span>
+        <span class="oc-status">● 已支付（平台托管）</span>
+      </div>
+      <div class="oc-row"><span class="label">商品</span><span>${currentProduct.title}</span></div>
+      <div class="oc-row"><span class="label">卖家</span><span>${currentProduct.seller}</span></div>
+      <div class="oc-row"><span class="label">支付方式</span><span>平台担保交易</span></div>
+      <div class="oc-row"><span class="label">实付金额</span><span style="color:var(--danger);font-weight:700;">¥${currentProduct.price.toFixed(2)}</span></div>
+    </div>` : '';
+  const lostBox = (pct < 50 || friendTransferRisk || douyinBankRisk) ? `
+    <div class="order-card" style="border-color:var(--danger);background:var(--danger-soft);">
+      <div class="oc-header">
+        <span class="oc-no">${currentProduct.scenario === 'friend' ? '好友转账风险' : currentProduct.scenario === 'douyin' ? '银行卡扣款风险' : '私下转账单据'} ${orderNo}</span>
+        <span class="oc-status" style="color:var(--danger);">● ${currentProduct.scenario === 'friend' ? '身份未核实' : currentProduct.scenario === 'douyin' ? '非官方号码' : '卖家已失联'}</span>
+      </div>
+      <div class="oc-row"><span class="label">${currentProduct.scenario === 'douyin' ? '风险金额' : '实付金额'}</span><span style="color:var(--danger);font-weight:700;">¥${currentProduct.scenario === 'douyin' ? '598.00' : currentProduct.price.toFixed(2)}</span></div>
+      <div class="oc-row"><span class="label">当前状态</span><span>${currentProduct.scenario === 'friend' ? '对方可能是仿冒账号，转出后很难追回' : currentProduct.scenario === 'douyin' ? '你提供的验证码或转账验证可能已授权扣款' : '资金已流向境外账户，无法追回'}</span></div>
+    </div>` : '';
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-icon"><i class="${icon}"></i></div>
+    <div class="result-title">${title}</div>
+    <div class="result-subtitle">${subtitle}</div>
+    ${makeScoreRing(pct, color)}
+    ${securedOrderBox}
+    ${lostBox}
+    <div style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">你在 ${scenario.steps.length} 个关键决策中做出了 ${safe} 个安全选择</div>
+    <div class="risk-analysis"><h3><i class="ph ph-warning-circle"></i> 本场景风险点</h3>${scenario.risks.map(r => `<div class="risk-item"><div class="icon"><i class="${r.icon}"></i></div><div class="desc"><b>${r.title}</b><span>${r.desc}</span></div></div>`).join('')}</div>
+    <div class="correct-actions"><h3><i class="ph ph-check-circle"></i> 正确做法</h3>${scenario.correct.map(c => `<li><i class="ph ph-check"></i> ${c}</li>`).join('')}</div>
+    <div class="result-actions"><button class="btn-retry" onclick="restart()" style="flex:1;"><i class="ph ph-arrow-counter-clockwise"></i> 再逛逛市集</button></div>`;
+  screenHistory = ['welcome']; showScreen('result');
+}
+
+function restart() {
+  currentProduct = null;
+  currentStep = 0;
+  userScore = 0;
+  userChoices = [];
+  finalAction = null;
+  afterSaleStep = 0;
+  afterSaleScore = 0;
+  afterSaleChoices = [];
+  screenHistory = ['welcome'];
+  showScreen('market');
+}
+
+// ==================== SELL ====================
+function renderSellScenarios() {
+  document.getElementById('sellScenarioList').innerHTML = SELL_SCENARIOS.map(s => `
+    <div class="sell-scenario-card" onclick="startSellChat('${s.id}')">
+      <div class="sc-icon" style="background:${s.bg}">${s.img ? `<img src="${s.img}" alt="${s.title}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" onerror="this.outerHTML='<i class=&quot;${s.emoji}&quot; style=&quot;font-size:26px&quot;></i>'">` : `<i class="${s.emoji}" style="font-size:26px"></i>`}</div>
+      <div class="sc-info"><h4>${s.title}</h4><p>${s.desc}</p></div>
+      <i class="ph ph-caret-right sc-arrow"></i>
+    </div>`).join('');
+}
+
+function startSellChat(id) {
+  currentSellScenario = SELL_SCENARIOS.find(s => s.id === id);
+  if (!currentSellScenario) return;
+  sellStep=0; sellScore=0; sellChoices=[];
+  showScreen('sell-chat');
+  const msgs = document.getElementById('sellChatMessages');
+  document.getElementById('sellChatChoices').innerHTML = '';
+  msgs.innerHTML = '';
+  addMsg(msgs, 'system', '你的商品已上架！一位买家正在联系你，请注意识别风险');
+  setTimeout(() => showSellStep(), 800);
+}
+
+function showSellStep() {
+  const sc = currentSellScenario;
+  if (sellStep >= sc.steps.length) { setTimeout(() => showSellResult(), 500); return; }
+  const step = sc.steps[sellStep];
+  const choices = document.getElementById('sellChatChoices');
+  choices.innerHTML = '';
+  const msgs = document.getElementById('sellChatMessages');
+  showTypingIn(msgs, 'sellTyping');
+  setTimeout(() => {
+    removeEl('sellTyping');
+    
+    // 分支逻辑：如果上一步用户选了不安全选项，则显示诱导性回复
+    const isLastChoiceUnsafe = sellStep > 0 && !sellChoices[sellStep - 1].safe;
+    const buyerMsg = (isLastChoiceUnsafe && step.buyerIfUnsafe) ? step.buyerIfUnsafe : step.buyer;
+    
+    addMsg(msgs, 'seller', buyerMsg, `${iconText(sc.buyerAvatar)} ${sc.buyerName}`, step.riskFlag);
+    setTimeout(() => {
+      choices.innerHTML = step.choices.map((c, i) => `<button class="choice-btn" onclick="makeSellChoice(${sellStep},${i})">${c.text}</button>`).join('');
+    }, 400);
+  }, 1200);
+}
+
+function makeSellChoice(step, idx) {
+  const choice = currentSellScenario.steps[step].choices[idx];
+  sellChoices.push({ step, idx, safe:choice.safe, score:choice.score });
+  sellScore += choice.score;
+  addMsg(document.getElementById('sellChatMessages'), 'user', choice.text, '你（卖家）');
+  document.getElementById('sellChatChoices').innerHTML = '';
+  sellStep++;
+  setTimeout(() => showSellStep(), 600);
+}
+
+function showSellResult() {
+  const sc = currentSellScenario;
+  const tp = sc.steps.reduce((s, st) => s + Math.max(...st.choices.map(c => c.score)), 0);
+  const pct = Math.min(100, Math.round((sellScore / tp) * 100));
+  const safe = sellChoices.filter(c => c.safe).length;
+  let title, subtitle, color, icon;
+  if (pct >= 80) { title='精明卖家！'; subtitle='你成功识破了假买家的骗局！'; color='var(--success)'; icon='ph ph-trophy'; }
+  else if (pct >= 50) { title='差点被套路！'; subtitle='你在部分环节被假买家迷惑了'; color='var(--warning)'; icon='ph ph-lightning'; }
+  else { title='不幸"中招"！'; subtitle='你被假买家的套路骗了，卖东西也要防诈'; color='var(--danger)'; icon='ph ph-smiley-blank'; }
+  
+  const lostBox = (pct < 50) ? `
+    <div class="order-card" style="border-color:var(--danger);background:var(--danger-soft);">
+      <div class="oc-header">
+        <span class="oc-no">私下交易纠纷</span>
+        <span class="oc-status" style="color:var(--danger);">● 卖家资产流失</span>
+      </div>
+      <div class="oc-row"><span class="label">涉及金额</span><span style="color:var(--danger);font-weight:700;">视骗局种类而定</span></div>
+      <div class="oc-row"><span class="label">当前状态</span><span>账号/资金已被窃取</span></div>
+    </div>` : '';
+
+  document.getElementById('sellResultContent').innerHTML = `
+    <div class="result-icon"><i class="${icon}"></i></div><div class="result-title">${title}</div><div class="result-subtitle">${subtitle}</div>
+    ${makeScoreRing(pct, color).replace('防骗指数','卖家防骗指数')}
+    ${lostBox}
+    <div style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">你在 ${sc.steps.length} 个关键决策中做出了 ${safe} 个安全选择</div>
+    <div class="risk-analysis"><h3><i class="ph ph-warning-circle"></i> 本场景风险点</h3>${sc.risks.map(r => `<div class="risk-item"><div class="icon"><i class="${r.icon}"></i></div><div class="desc"><b>${r.title}</b><span>${r.desc}</span></div></div>`).join('')}</div>
+    <div class="correct-actions"><h3><i class="ph ph-check-circle"></i> 正确做法</h3>${sc.correct.map(c => `<li><i class="ph ph-check"></i> ${c}</li>`).join('')}</div>
+    <div class="result-actions"><button class="btn-retry" onclick="showScreen('sell')" style="flex:1;"><i class="ph ph-archive"></i> 再试一个卖家场景</button></div>`;
+  screenHistory = ['welcome']; showScreen('sell-result');
+}
+
+function escapeHtml(str) { const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+
+// ==================== INIT ====================
+renderMarket();
+renderSellScenarios();
+setTimeout(enableIconFallbacksIfNeeded, 1200);
+window.addEventListener('load', () => setTimeout(enableIconFallbacksIfNeeded, 200));
+</script>
+</body>
+</html>
