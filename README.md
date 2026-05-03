@@ -71,7 +71,7 @@
 
 ## 访问项目
 
-🔗 **在线体验**：https://github.com/lunaark/anti-fraud-game
+🔗 **在线体验**：[https://github.com/lunaark/anti-fraud-game](https://anti-fraud-game.vercel.app/)
 
 ## 贡献
 
